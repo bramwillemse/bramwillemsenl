@@ -9,11 +9,10 @@ The site's main header.
   align-items: center;
   display: grid;
   grid-column: 1 / 5;
-  grid-gap: var(--spacing-xs);
   grid-template: "center center center center" "left left left right";
   grid-template-columns: subgrid;
   grid-template-rows: repeat(2, auto);
-  margin: var(--spacing-xs) var(--spacing-xs) 0;
+  margin-top: var(--spacing-xs);
   pointer-events: none;
   position: relative;
   width: auto;
@@ -22,7 +21,6 @@ The site's main header.
 
 @media (--br-xs) {
   .o-site-header {
-    grid-gap: var(--s);
     grid-template: "left center right";
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     left: 0;
