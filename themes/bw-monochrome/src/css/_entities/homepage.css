@@ -1,0 +1,80 @@
+/*
+HOMEPAGE
+--------
+Styles specific to the homepage components.
+*/
+
+/* Grid areas for homepage content */
+.e-homepage__header,
+.e-homepage__card {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto 1fr; /* Stack content vertically within each grid area */
+  width: 100%; /* Ensure full width */
+}
+
+/* Style content inside grid areas */
+.e-homepage__header > *,
+.e-homepage__card > * {
+  grid-column: 1 / -1; /* Make content span all columns within the subgrid */
+}
+
+.e-homepage__header {
+  grid-column: span 4;
+}
+
+/* H1 */
+.e-homepage__card h1,
+.e-homepage__header h1 {
+  margin-bottom: 0;
+}
+
+@media (--br-s) {
+  .e-homepage__card {
+    grid-column: span 2;
+  }
+}
+
+@media (--br-m) {
+  .e-homepage__header {
+    grid-column: span 4;
+  }
+}
+
+@media (--br-l) {
+  .e-homepage__card {
+    grid-column: span 2;
+    grid-row: 3 / 4;
+  }
+}
+
+@media (--br-xl) {
+  .e-homepage__header {
+    grid-column: span 4;
+  }
+
+  .e-homepage__card-one {
+    order: 1;
+  }
+
+  .e-homepage__card-two {
+    order: 0;
+  }
+
+  .e-homepage__card-three {
+    order: 2;
+  }
+}
+
+@media (--br-xxl) {
+  .e-homepage__header {
+    grid-column: 3 / span 2;
+  }
+}
+
+@media (--br-xxxl) {
+  .e-homepage__header {
+    grid-column: 3 / span 2;
+  }
+}

@@ -10,41 +10,42 @@ SITE FOOTER
   {{ $classes = "e-content-block e-content-block--transparent" }}
 {{ end}}
 
-<footer id="site-footer" class="o-site-footer">
-  <section class="{{ $classes }}">
+<footer id="site-footer" class="o-site-footer {{ $classes }}">
+  {{/* PERSONAL INFO */}}
+  <section aria-label="Personal information">
     <ul>
       <li><strong>Bram Willemse</strong><br> - <i>Interim product professional</i></li>
     </ul>
+  </section>
 
-    {{/* LINKS */}}
-    <section aria-label="Website navigation">
-      <ul id="site-links" class="links">
-        <li><a href="/" title="Everything about me">About me</a></li>
-        <!--<li><a href="/articles" title="Articles written by me">Articles</a></li>-->
-        <li><a href="/now" title="What am I doing now?">Now</a></li>
-      </ul>
-    </section>
+  {{/* LINKS */}}
+  <section aria-label="Website navigation">
+    <ul id="site-links" class="links">
+      <li><a href="/" title="Everything about me">About me</a></li>
+      <!--<li><a href="/articles" title="Articles written by me">Articles</a></li>-->
+      <li><a href="/now" title="What am I doing now?">Now</a></li>
+    </ul>
+  </section>
 
-    {{/* CONTACT DATA */}}
-    <section aria-label="Contact data">
-      <ul id="site-contact" class="contact">
-        <li>
-          <a href="https://linkedin.com/in/bramwillemse" title="Bram's LinkedIn profile">LinkedIn</a>
-        </li>
-        <li>
-          <a href="mailto:contact@bramwillemse.nl" title="Bram's email address">contact@bramwillemse.nl</a>
-        </li>
-      </ul>
-    </section>
+  {{/* CONTACT DATA */}}
+  <section aria-label="Contact data">
+    <ul id="site-contact" class="contact">
+      <li>
+        <a href="https://linkedin.com/in/bramwillemse" title="Bram's LinkedIn profile">LinkedIn</a>
+      </li>
+      <li>
+        <a href="mailto:contact@bramwillemse.nl" title="Bram's email address">contact@bramwillemse.nl</a>
+      </li>
+    </ul>
+  </section>
 
-    {{/* COMPANY INFORMATION */}}
-    <section aria-label="Company information">
-      <dl id="site-company-info" class="company">
-        <dt>KvK</dt>
-        <dd>02100899</dd>
-        <dt>Belastingdienst</dt>
-        <dd>NL002160459B77</dd>
-      </dl>
-    </section>
+  {{/* COMPANY INFORMATION */}}
+  <section aria-label="Company information">
+    <dl id="site-company-info" class="company">
+      <dt>KvK</dt>
+      <dd>02100899</dd>
+      <dt>Belastingdienst</dt>
+      <dd>NL002160459B77</dd>
+    </dl>
   </section>
 </footer>

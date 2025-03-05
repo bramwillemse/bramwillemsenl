@@ -1,3 +1,4 @@
 .o-site-main {
+  display: contents; /* This makes children of site-main act as direct children of body */
   outline: none;
 }

@@ -7,16 +7,14 @@ The site's main footer module
 
 .o-site-footer {
   background-color: var(--grey-10);
-  padding: 0 var(--spacing-xs) var(--spacing-l);
-  position: relative;
-  width: 100%;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   z-index: var(--z-footer);
 }
 
-@media (--br-m) {
-  .o-site-footer {
-    padding: 0 var(--spacing-xl) var(--spacing-xl);
-  }
+.o-site-footer > section {
+  grid-column: 1 / -1;
 }
 
 @media (prefers-color-scheme: dark) {
