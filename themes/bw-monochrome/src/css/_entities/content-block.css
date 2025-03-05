@@ -6,17 +6,21 @@
 .e-content-block {
   background-color: var(--white);
   box-shadow: var(--shadow-panel);
-  display: block;
-  margin: 0 auto var(--spacing-m);
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;;
   max-width: 56ch;
   padding: var(--spacing-m) var(--s);
   position: relative;
   z-index: var(--z-content);
 }
 
+.e-content-block > * {
+  grid-column: 1 / -1;
+}
+
 @media (--br-m) {
   .e-content-block {
-    margin-bottom: var(--spacing-m);
     padding: var(--xl);
   }
 }

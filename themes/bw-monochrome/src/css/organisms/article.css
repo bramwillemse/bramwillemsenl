@@ -5,10 +5,15 @@ A blog post or content page
 */
 
 .o-article {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+@media (--br-l) {
+  .o-article {
+    grid-column: 2 / 6;
+  }
 }
 
 .o-article--compact {

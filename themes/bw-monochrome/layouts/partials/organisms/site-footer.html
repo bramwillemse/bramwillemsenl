@@ -7,7 +7,7 @@ SITE FOOTER
 {{ $classes := "" }}
 
 {{ if and (eq .IsHome false) (or (eq .Type "page") (eq .Type "articles")) }}
-  {{ $classes = "e-content-block e-content-block--transparent" }}
+  {{ $classes = "o-site-footer--content" }}
 {{ end}}
 
 <footer id="site-footer" class="o-site-footer {{ $classes }}">

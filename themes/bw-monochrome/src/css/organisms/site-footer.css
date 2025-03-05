@@ -49,3 +49,9 @@ The site's main footer module
     display: inline-block;
   }
 }
+
+@media (--br-l) {
+  .o-site-footer--content {
+    grid-column: 2 / 6;
+  }
+}

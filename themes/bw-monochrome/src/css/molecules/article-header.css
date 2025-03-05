@@ -5,6 +5,10 @@ ARTICLE HEADER
 
 .m-article-header {
   border-top: solid 1rem var(--black);
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  margin-bottom: var(--spacing-m);
   padding-top: 1rem;
   position: relative;
   z-index: var(--z-rel-1st);
@@ -17,10 +21,20 @@ ARTICLE HEADER
   }
 }
 
+.m-article-header > * {
+  grid-column: 1 / -1;
+}
+
 .m-article-header h1 {
   margin-bottom: 0;
 }
 
 .m-article-header__date {
   margin-bottom: var(--spacing-s);
+}
+
+@media (--br-s) {
+  .m-article-header {
+    margin-bottom: var(--spacing-m);
+  }
 }

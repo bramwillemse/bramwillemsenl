@@ -4,6 +4,5 @@ body {
   font-size: 100%;
   margin: 0;
   overflow-x: hidden;
-  position: relative;
   –webkit-overflow-scrolling: touch; /* stylelint-disable-line */
 }
