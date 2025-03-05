@@ -8,27 +8,15 @@ The site's main header.
 .o-site-header {
   align-items: center;
   display: grid;
-  grid-column: 1 / 5;
-  grid-template: "center center center center" "left left left right";
+  grid-column: 1 / -1;
+  grid-template: "center center center center" "left left left left";
   grid-template-columns: subgrid;
   grid-template-rows: repeat(2, auto);
-  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
   pointer-events: none;
   position: relative;
   width: auto;
   z-index: var(--z-header);
-}
-
-@media (--br-xs) {
-  .o-site-header {
-    grid-template: "left center right";
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    left: 0;
-    margin: var(--spacing-s) var(--spacing-xs) var(--spacing-m);
-    position: fixed;
-    right: 0;
-    top: 0;
-  }
 }
 
 .o-site-header__left {
@@ -38,7 +26,7 @@ The site's main header.
 
 .o-site-header__center {
   grid-area: center;
-  grid-column: 1 / 5;
+  grid-column: 1 / -1;
   line-height: 0;
   text-align: center;
 }
@@ -50,4 +38,13 @@ The site's main header.
 
 .o-site-header__clickable {
   pointer-events: auto;
+}
+
+@media (--br-xs) {
+  .o-site-header {
+    grid-template: "left center right";
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    position: sticky;
+    top: 0;
+  }
 }

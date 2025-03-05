@@ -12,7 +12,7 @@ The site's main header, containing logo and conditional navigational elements.
       {{ $parentLabel := (print "Back to " $parentTitle) }}
       {{ $parentUrl := .Params.parent.url }}
       {{ $parentIcon := .Params.parent.icon }}
-      
+
       {{ partial "atoms/button" (dict "icon" $parentIcon "url" $parentUrl "label" $parentLabel "classes" "a-button--secondary m-article-navigation__button u-is-clickable") }}
     {{ end }}
   </div>
