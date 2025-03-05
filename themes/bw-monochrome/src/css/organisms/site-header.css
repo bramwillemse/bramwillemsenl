@@ -8,10 +8,12 @@ The site's main header.
 .o-site-header {
   align-items: center;
   display: grid;
+  grid-column: 1 / 5;
   grid-gap: var(--spacing-xs);
-  grid-template: "center center" "left right";
-  grid-template-columns: repeat(minmax(0, 1fr));
-  margin: var(--spacing-xs) var(--spacing-xs) var(--spacing-m);
+  grid-template: "center center center center" "left left left right";
+  grid-template-columns: subgrid;
+  grid-template-rows: repeat(2, auto);
+  margin: var(--spacing-xs) var(--spacing-xs) 0;
   pointer-events: none;
   position: relative;
   width: auto;
@@ -34,28 +36,20 @@ The site's main header.
 .o-site-header__left {
   grid-area: left;
   justify-content: flex-start;
-  order: 1;
 }
 
 .o-site-header__center {
   grid-area: center;
+  grid-column: 1 / 5;
   line-height: 0;
-  order: 0;
   text-align: center;
 }
 
 .o-site-header__right {
-  display: flex;
   grid-area: right;
   justify-content: flex-end;
 }
 
 .o-site-header__clickable {
   pointer-events: auto;
-}
-
-@media (--br-xs) {
-  .a-site-header-spacer {
-    height: 6rem;
-  }
 }

@@ -1,0 +1,25 @@
+
+/*
+SITE HEADER: SPACER
+-------------------
+*/
+.a-site-header-spacer {
+  display: none;
+  grid-column: 1 / 5;
+  grid-template-columns: subgrid;
+  width: 100%;
+}
+
+@media (--br-xs) {
+  .a-site-header-spacer {
+    display: grid;
+    /* Use CSS variables to match the header's height components */
+    height: calc(var(--spacing-s) + var(--spacing-m) + 2rem); /* Top margin + bottom margin + estimated logo height */
+  }
+}
+
+@media (--br-l) {
+  .a-site-header-spacer {
+    grid-column: 1 / 7;
+  }
+}

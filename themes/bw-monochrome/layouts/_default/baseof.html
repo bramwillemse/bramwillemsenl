@@ -20,7 +20,6 @@
     <meta name="twitter:site" content="@bramwillemse">
 
     <base href="{{ $.Site.BaseURL }}" />
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
 
     <!-- Debug CSS -->
     {{ $css := resources.Get "main.css" }}
@@ -34,7 +33,7 @@
     {{ end }}
   </head>
 
-  <body>
+  <body class="e-grid-global">
     {{ block "skiplinks" . }}
       {{ partial "molecules/skip-links" . }}
     {{ end }}
