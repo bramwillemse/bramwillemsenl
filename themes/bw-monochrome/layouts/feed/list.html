@@ -1,0 +1,66 @@
+{{/*
+LIST (FEED)
+--------------
+*/}}
+
+{{ define "main" }}
+  <main id="site-main" tabindex="-1" class="o-site-main">
+    <section class="e-list">
+      <header class="m-list-header">
+        <h1 class="m-list-header__title">{{ .Title }}</h1>
+        <p class="m-list-header__subline">{{ .Description }}</p>
+      </header>
+
+      {{/* Get articles - exclude list pages by checking for Kind "page" */}}
+      {{ $articles := where (where .Site.Pages "Section" "articles") "Kind" "page" }}
+
+      {{/* Get drawings - exclude list pages by checking for Kind "page" */}}
+      {{ $drawings := where (where .Site.Pages "Section" "drawings") "Kind" "page" }}
+
+      {{/* Combine and sort content */}}
+      {{ $combined := union $articles $drawings }}
+      {{ $sorted := sort $combined "Date" "desc" }}
+
+      {{/* Set up pagination */}}
+      {{ $paginator := .Paginate $sorted 10 }}
+
+      {{ range $paginator.Pages }}
+        {{/* ARTICLES */}}
+        {{ if eq .Section "articles" }}
+          <article class="o-article o-article--compact e-content-block">
+            <h1>
+              <a href="{{ .Permalink }}" tabindex="-1">
+                {{ if (.Params.title_short) }}
+                  {{ .Params.title_short }}
+                {{ else }}
+                  {{ .Title }}
+                {{ end }}
+              </a>
+            </h1>
+
+            <p>{{ .Params.introduction | safeHTML }}</p>
+
+            {{ partial "atoms/button" (dict "ariaLabel" .Title "icon" "read" "label" "Let me read this" "url" .Permalink) }}
+          </article>
+
+        {{/* DRAWINGS */}}
+        {{ else if eq .Section "drawings" }}
+          <article class="o-drawing e-content-block e-content-block--transparent">
+            {{ .Content | safeHTML }}
+            <h1 class="u-margin-bottom-none">
+              {{ .Title }}
+            </h1>
+            <p>
+              {{ partial "atoms/date" . }}
+            </p>
+            <p>
+              <a href="{{ .Permalink }}" title="View drawing {{ .Title }}">View this drawing</a>
+            </p>
+          </article>
+        {{ end }}
+      {{ end }}
+
+      {{ partial "molecules/pagination" . }}
+    </section>
+  </main>
+{{ end }}
