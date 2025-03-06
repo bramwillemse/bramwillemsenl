@@ -24,6 +24,7 @@ A blog post or content page
 }
 
 .o-article--compact .a-button {
+  justify-self: start;
   margin-bottom: 0;
 }
 
@@ -36,7 +37,8 @@ A blog post or content page
 }
 
 @media (--br-s) {
-  .o-article__block {
+  .o-article__block,
+  .o-article--compact {
     display: block;
     justify-self: center;
     max-width: 56ch;

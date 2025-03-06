@@ -1,6 +1,7 @@
 .m-pagination {
   display: flex;
   list-style: none;
+  margin-bottom: 0;
 }
 
 .m-pagination__link {

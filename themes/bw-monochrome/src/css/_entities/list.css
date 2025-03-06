@@ -1,6 +1,11 @@
+/*
+LIST
+--------
+*/
 
-.o-list {
+.e-list {
   align-items: center;
   display: flex;
   flex-direction: column;
+  grid-column: 1 / -1;
 }
