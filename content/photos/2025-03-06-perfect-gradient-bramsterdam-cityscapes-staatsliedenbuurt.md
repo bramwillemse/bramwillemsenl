@@ -7,7 +7,10 @@ type: "photos"
 tags: ["bramsterdam", "cityscape", "staatsliedenbuurt"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54368968464/"
-  image_url: "https://live.staticflickr.com/65535/54368968464_0d53149a10_m.jpg"
+  photo_id: "54368968464"
+  image_url: "https://live.staticflickr.com/65535/54368968464_0d53149a10_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54368968464.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54368968464_0d53149a10_m.jpg" title="Perfect gradient #bramsterdam #cityscapes #staatsliedenbuurt" >}}
+{{< figure src="/images/photos/flickr-54368968464.jpg" title="Perfect gradient #bramsterdam #cityscapes #staatsliedenbuurt" >}}

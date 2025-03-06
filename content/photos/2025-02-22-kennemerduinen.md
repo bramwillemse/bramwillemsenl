@@ -7,7 +7,10 @@ type: "photos"
 tags: ["duinen", "dunes", "kennemerduinen", "landscapes"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54342775526/"
-  image_url: "https://live.staticflickr.com/65535/54342775526_c5a084b971_m.jpg"
+  photo_id: "54342775526"
+  image_url: "https://live.staticflickr.com/65535/54342775526_c5a084b971_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54342775526.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54342775526_c5a084b971_m.jpg" title="Kennemerduinen" >}}
+{{< figure src="/images/photos/flickr-54342775526.jpg" title="Kennemerduinen" >}}

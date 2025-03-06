@@ -7,7 +7,10 @@ type: "photos"
 tags: ["opzich", "graffiti", "amsterdam", "bramsterdam", "tags"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54342137466/"
-  image_url: "https://live.staticflickr.com/65535/54342137466_7f873a44e4_m.jpg"
+  photo_id: "54342137466"
+  image_url: "https://live.staticflickr.com/65535/54342137466_7f873a44e4_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54342137466.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54342137466_7f873a44e4_m.jpg" title="Opzich #notanobsession #opzich" >}}
+{{< figure src="/images/photos/flickr-54342137466.jpg" title="Opzich #notanobsession #opzich" >}}

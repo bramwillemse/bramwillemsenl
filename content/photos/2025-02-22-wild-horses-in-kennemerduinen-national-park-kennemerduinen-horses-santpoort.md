@@ -7,7 +7,10 @@ type: "photos"
 tags: ["kennemerduinen", "santpoort", "horses"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54341878297/"
-  image_url: "https://live.staticflickr.com/65535/54341878297_417acaba6b_m.jpg"
+  photo_id: "54341878297"
+  image_url: "https://live.staticflickr.com/65535/54341878297_417acaba6b_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54341878297.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54341878297_417acaba6b_m.jpg" title="“Wild” horses in Kennemerduinen National Park #kennemerduinen #horses #santpoort" >}}
+{{< figure src="/images/photos/flickr-54341878297.jpg" title="“Wild” horses in Kennemerduinen National Park #kennemerduinen #horses #santpoort" >}}

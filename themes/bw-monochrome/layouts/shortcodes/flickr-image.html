@@ -2,23 +2,46 @@
 FLICKR IMAGE
 -----------
 Displays an image from Flickr with appropriate attribution and lazy loading.
+Handles high-resolution images responsively.
 */}}
 
 {{ $url := .Get "url" }}
 {{ $title := .Get "title" | default "Photo on Flickr" }}
+{{ $isLocal := hasPrefix $url "/images/" }}
 
-<figure class="a-figure a-figure--flickr">
-  <picture class="a-picture">
+{{ if $isLocal }}
+  <figure class="a-figure a-figure--flickr">
     <img
       src="{{ $url }}"
-      data-src="{{ $url }}"
       alt="{{ $title }}"
       loading="lazy"
       data-animation="zoom-in">
-  </picture>
-  {{ if $title }}
-    <figcaption>
-      {{ $title }}
-    </figcaption>
-  {{ end }}
-</figure>
+    {{ if $title }}
+      <figcaption>
+        {{ $title }}
+      </figcaption>
+    {{ end }}
+  </figure>
+{{ else }}
+  {{ $smallUrl := replace $url "_b.jpg" "_m.jpg" }}
+  {{ $mediumUrl := replace $url "_b.jpg" "_z.jpg" }}
+  {{ $largeUrl := $url }}  {{/* Already large (_b.jpg) */}}
+
+  <figure class="a-figure a-figure--flickr">
+    <picture class="a-picture">
+      <source media="(min-width: 1200px)" srcset="{{ $largeUrl }}">
+      <source media="(min-width: 700px)" srcset="{{ $mediumUrl }}">
+      <img
+        src="{{ $smallUrl }}"
+        data-src="{{ $largeUrl }}"
+        alt="{{ $title }}"
+        loading="lazy"
+        data-animation="zoom-in">
+    </picture>
+    {{ if $title }}
+      <figcaption>
+        {{ $title }}
+      </figcaption>
+    {{ end }}
+  </figure>
+{{ end }}

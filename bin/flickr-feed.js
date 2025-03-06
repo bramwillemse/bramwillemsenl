@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const xml2js = require('xml2js');
+const https = require('https');
+const { promisify } = require('util');
+const stream = require('stream');
+const pipeline = promisify(stream.pipeline);
 
 // Configuration 
 // Using the NSID for Bram Willemse's account
@@ -11,8 +15,10 @@ const FLICKR_FEED_URL = `https://www.flickr.com/services/feeds/photos_public.gne
 // Limit to 10 most recent photos by default
 const PHOTO_LIMIT = 10;
 const CONTENT_DIR = path.join(__dirname, '../content/photos');
+const ASSETS_DIR = path.join(__dirname, '../assets/images/photos');
 const FORCE_UPDATE = process.argv.includes('--force');
 const USE_SAMPLE = process.argv.includes('--sample');
+const USE_SAMPLE_IMAGES = process.argv.includes('--sample-images');
 
 // Path to sample data file (for testing)
 const SAMPLE_FILE_PATH = path.join(__dirname, 'flickr-sample.xml');
@@ -31,6 +37,92 @@ const api = axios.create({
 if (!fs.existsSync(CONTENT_DIR)) {
   fs.mkdirSync(CONTENT_DIR, { recursive: true });
   console.log(`Created directory: ${CONTENT_DIR}`);
+}
+
+// Ensure photos assets directory exists
+if (!fs.existsSync(ASSETS_DIR)) {
+  fs.mkdirSync(ASSETS_DIR, { recursive: true });
+  console.log(`Created assets directory: ${ASSETS_DIR}`);
+}
+
+// Function to download an image from Flickr with retry logic
+async function downloadImage(imageUrl, photoId) {
+  // Get the highest resolution version (_b.jpg or _o.jpg)
+  const highResUrl = imageUrl.replace(/_m\.jpg$/, '_b.jpg');
+  
+  // Extract filename from Flickr URL
+  const filename = `flickr-${photoId}.jpg`;
+  const outputPath = path.join(ASSETS_DIR, filename);
+  
+  // Check if file already exists
+  if (fs.existsSync(outputPath) && !FORCE_UPDATE) {
+    console.log(`Image already downloaded: ${filename}`);
+    return { success: true, path: `images/photos/${filename}` };
+  }
+  
+  // For sample mode, use placeholder images instead of actual downloads
+  if (USE_SAMPLE_IMAGES) {
+    console.log(`Using sample image for photo ID: ${photoId}`);
+    
+    try {
+      // Use Flickr URL for sample
+      console.log(`Using Flickr URL for sample instead of local image`);
+      
+      // Return the Flickr URL - do not mark as sample to use the normal Flickr image
+      return { success: true, path: highResUrl, isSample: false };
+    } catch (error) {
+      console.error(`Error setting up sample image: ${error.message}`);
+      return { success: false, error: error.message };
+    }
+  }
+  
+  // Add retry logic for downloading
+  let attempts = 0;
+  const maxAttempts = 3;
+  
+  while (attempts < maxAttempts) {
+    try {
+      console.log(`Downloading image from ${highResUrl} (attempt ${attempts + 1}/${maxAttempts})`);
+      
+      // Add delay between retries
+      if (attempts > 0) {
+        const delay = Math.pow(2, attempts) * 1000;
+        console.log(`Waiting ${delay/1000} seconds before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      
+      // Download the image directly with arraybuffer response type
+      const response = await axios({
+        url: highResUrl,
+        method: 'GET',
+        responseType: 'arraybuffer', // Important: use arraybuffer for binary data
+        headers: {
+          'User-Agent': 'Mozilla/5.0 BramWillemseWebsite/1.0 (https://bramwillemse.nl)',
+          'Referer': 'https://bramwillemse.nl'
+        },
+        timeout: 15000
+      });
+      
+      // Check content type to ensure it's an image
+      const contentType = response.headers['content-type'];
+      if (!contentType || !contentType.startsWith('image/')) {
+        throw new Error(`Downloaded content is not an image: ${contentType}`);
+      }
+      
+      // Write the binary data directly to file
+      fs.writeFileSync(outputPath, Buffer.from(response.data));
+      
+      console.log(`Saved image to: ${outputPath}`);
+      return { success: true, path: `images/photos/${filename}` };
+    } catch (error) {
+      console.error(`Error downloading image (attempt ${attempts + 1}/${maxAttempts}): ${error.message}`);
+      attempts++;
+      
+      if (attempts >= maxAttempts) {
+        return { success: false, error: error.message };
+      }
+    }
+  }
 }
 
 // Create _index.md if it doesn't exist
@@ -70,9 +162,9 @@ function slugify(title) {
 }
 
 // Create a Hugo content file for a photo
-function createPhotoContent(photo) {
+async function createPhotoContent(photo) {
   // Extract data from the photo (handling both RSS and Atom formats)
-  let title, link, pubDate, description, imageUrl, author, categories;
+  let title, link, pubDate, description, imageUrl, author, categories, photoId;
   
   // Check if it's RSS format
   if (photo.title && photo.link && photo.pubDate) {
@@ -80,6 +172,10 @@ function createPhotoContent(photo) {
     link = photo.link[0];
     pubDate = new Date(photo.pubDate[0]);
     description = photo.description ? photo.description[0] : '';
+    
+    // Extract photo ID from the link
+    const idMatch = link.match(/\/photos\/[^\/]+\/(\d+)/);
+    photoId = idMatch ? idMatch[1] : null;
     
     // Extract image URL from description
     const imgMatch = description.match(/<img src="([^"]+)"[^>]*>/);
@@ -99,6 +195,10 @@ function createPhotoContent(photo) {
     const links = photo.link || [];
     const photoLink = links.find(l => l.$.rel === 'alternate');
     link = photoLink ? photoLink.$.href : '';
+    
+    // Extract photo ID from the link
+    const idMatch = link.match(/\/photos\/[^\/]+\/(\d+)/);
+    photoId = idMatch ? idMatch[1] : null;
     
     pubDate = new Date(photo.published[0]);
     
@@ -120,8 +220,24 @@ function createPhotoContent(photo) {
     link = '';
     pubDate = new Date();
     imageUrl = '';
+    photoId = null;
     author = 'Bram Willemse';
     categories = [];
+  }
+  
+  // Download the image to the assets directory if we have a photo ID
+  let localImagePath = '';
+  let downloadResult = null;
+  if (photoId && imageUrl) {
+    downloadResult = await downloadImage(imageUrl, photoId);
+    if (downloadResult.success) {
+      localImagePath = downloadResult.path;
+    } else {
+      console.warn(`Warning: Couldn't download image for ${title}, using Flickr URL instead`);
+      localImagePath = imageUrl;
+    }
+  } else {
+    localImagePath = imageUrl;
   }
   
   // Generate a slug from the title and date
@@ -145,6 +261,13 @@ function createPhotoContent(photo) {
     }
   }
   
+  // Determine what type of image we're using
+  const isLocalImage = localImagePath.startsWith('images/');
+  const isSampleImage = downloadResult && downloadResult.isSample;
+  
+  // Create a higher resolution URL by changing _m.jpg to _b.jpg for Flickr URLs
+  const highResImageUrl = imageUrl.replace(/_m\.jpg$/, '_b.jpg');
+  
   // Create frontmatter
   const frontmatter = `---
 title: "${title.replace(/"/g, '\\"')}"
@@ -155,11 +278,16 @@ type: "photos"
 tags: [${tags.map(t => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]
 flickr:
   url: "${link}"
-  image_url: "${imageUrl}"
+  photo_id: "${photoId || ''}"
+  image_url: "${highResImageUrl}"
+featured_image:
+  src: "${isLocalImage ? localImagePath : highResImageUrl}"
 ---
 
-{{< flickr-image url="${imageUrl}" title="${title.replace(/"/g, '\\"')}" >}}
-`;
+${isLocalImage 
+  ? `{{< figure src="/${localImagePath}" title="${title.replace(/"/g, '\\"')}" >}}`
+  : `{{< flickr-image url="${highResImageUrl}" title="${title.replace(/"/g, '\\"')}" >}}`
+}`;
 
   // Write to file
   const filePath = path.join(CONTENT_DIR, `${slug}.md`);
@@ -268,7 +396,9 @@ async function fetchAndProcessFeed() {
     
     let newPhotos = 0;
     
-    for (const item of itemsToProcess) {
+    for (let i = 0; i < itemsToProcess.length; i++) {
+      const item = itemsToProcess[i];
+      
       // Handle both RSS and Atom formats for checking existing items
       let itemTitle, itemDate, dateSlugPart;
       
@@ -298,7 +428,13 @@ async function fetchAndProcessFeed() {
         continue;
       }
       
-      const slug = createPhotoContent(item);
+      // Add a delay between processing photos to avoid rate limiting
+      if (i > 0) {
+        console.log('Waiting 1 second before processing next photo to avoid rate limiting...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      const slug = await createPhotoContent(item);
       console.log(`Added new photo: ${slug}`);
       newPhotos++;
     }
@@ -312,5 +448,12 @@ async function fetchAndProcessFeed() {
   }
 }
 
-// Run the main function
-fetchAndProcessFeed();
+// Run the main function asynchronously
+(async () => {
+  try {
+    await fetchAndProcessFeed();
+  } catch (error) {
+    console.error('Failed to process Flickr feed:', error);
+    process.exit(1);
+  }
+})();

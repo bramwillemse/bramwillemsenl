@@ -7,7 +7,10 @@ type: "photos"
 tags: ["cutecouple", "westerpark", "amsterdam", "bramsterdam"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54342775511/"
-  image_url: "https://live.staticflickr.com/65535/54342775511_d29ac080ef_m.jpg"
+  photo_id: "54342775511"
+  image_url: "https://live.staticflickr.com/65535/54342775511_d29ac080ef_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54342775511.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54342775511_d29ac080ef_m.jpg" title="Cute couple, pt. 19 #cutecouple #westerpark #amsterdam" >}}
+{{< figure src="/images/photos/flickr-54342775511.jpg" title="Cute couple, pt. 19 #cutecouple #westerpark #amsterdam" >}}

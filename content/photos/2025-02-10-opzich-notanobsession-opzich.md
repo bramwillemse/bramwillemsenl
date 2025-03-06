@@ -7,7 +7,10 @@ type: "photos"
 tags: ["notanobsession", "opzich"]
 flickr:
   url: "https://www.flickr.com/photos/bramwillemse/54318764928/"
-  image_url: "https://live.staticflickr.com/65535/54318764928_bbd2f67525_m.jpg"
+  photo_id: "54318764928"
+  image_url: "https://live.staticflickr.com/65535/54318764928_bbd2f67525_b.jpg"
+featured_image:
+  src: "images/photos/flickr-54318764928.jpg"
 ---
 
-{{< flickr-image url="https://live.staticflickr.com/65535/54318764928_bbd2f67525_m.jpg" title="Opzich #notanobsession #opzich" >}}
+{{< figure src="/images/photos/flickr-54318764928.jpg" title="Opzich #notanobsession #opzich" >}}
