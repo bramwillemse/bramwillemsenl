@@ -17,11 +17,18 @@ LIST (PHOTOS)
         {{ range $paginator.Pages }}
           <article class="o-photo e-content-block e-content-block--transparent">
             <a href="{{ .Permalink }}" class="o-photo__link" title="View: {{ .Title }}">
-              {{ with .Params.flickr }}
-                <img src="{{ .image_url }}" 
+              {{ with .Params.featured_image }}
+                <img src="/{{ .src }}" 
                      alt="{{ $.Title }}"
                      loading="lazy"
                      class="o-photo__image">
+              {{ else }}
+                {{ with $.Params.flickr }}
+                  <img src="{{ .image_url }}" 
+                       alt="{{ $.Title }}"
+                       loading="lazy"
+                       class="o-photo__image">
+                {{ end }}
               {{ end }}
               
               <h2 class="o-photo__title">
