@@ -5,7 +5,9 @@
   color: var(--white);
   display: flex;
   flex-direction: column;
+  left: 0;
   position: absolute;
+  right: 0;
   top: 0;
   transform: translateY(calc(-100% - var(--spacing-l)));
   transition: .3s var(--ease-in-out-quad);

@@ -8,7 +8,7 @@ ARTICLE HEADER
   margin-bottom: var(--spacing-m);
   padding-top: 1rem;
   position: relative;
-  z-index: var(--z-rel-1st);
+  z-index: var(--z-content);
 }
 
 @media (prefers-color-scheme: dark) {
