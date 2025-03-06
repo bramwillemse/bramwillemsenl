@@ -16,7 +16,9 @@
 
 .m-list-header__title {
   display: inline;
+  letter-spacing: .033em;
   margin-bottom: 0;
+  text-transform: uppercase;
 }
 .m-list-header__subline {
   font-style: italic;

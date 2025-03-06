@@ -1,0 +1,24 @@
+{{/*
+FLICKR IMAGE
+-----------
+Displays an image from Flickr with appropriate attribution and lazy loading.
+*/}}
+
+{{ $url := .Get "url" }}
+{{ $title := .Get "title" | default "Photo on Flickr" }}
+
+<figure class="a-figure a-figure--flickr">
+  <picture class="a-picture">
+    <img
+      src="{{ $url }}"
+      data-src="{{ $url }}"
+      alt="{{ $title }}"
+      loading="lazy"
+      data-animation="zoom-in">
+  </picture>
+  {{ if $title }}
+    <figcaption>
+      {{ $title }}
+    </figcaption>
+  {{ end }}
+</figure>
