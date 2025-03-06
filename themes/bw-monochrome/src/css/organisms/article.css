@@ -10,12 +10,6 @@ A blog post or content page
   grid-template-columns: subgrid;
 }
 
-@media (--br-l) {
-  .o-article {
-    grid-column: 2 / 6;
-  }
-}
-
 .o-article--compact {
   align-items: flex-start;
   border-left: solid .3rem var(--black);
@@ -37,6 +31,14 @@ A blog post or content page
   margin-top: 33vh;
 }
 
-.o-article__content {
-  align-items: center;
+.o-article__block {
+  grid-column: 1 / -1;
+}
+
+@media (--br-s) {
+  .o-article__block {
+    display: block;
+    justify-self: center;
+    max-width: 56ch;
+  }
 }

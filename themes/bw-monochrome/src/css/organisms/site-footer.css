@@ -38,6 +38,12 @@ The site's main footer module
 }
 
 @media (--br-s) {
+  .o-site-footer--content {
+    display: block;
+    justify-self: center;
+    max-width: 56ch;
+  }
+
   .o-site-footer ul,
   .o-site-footer dl {
     margin-bottom: 0;
@@ -48,10 +54,5 @@ The site's main footer module
   .o-site-footer li {
     display: inline-block;
   }
-}
 
-@media (--br-l) {
-  .o-site-footer--content {
-    grid-column: 2 / 6;
-  }
 }

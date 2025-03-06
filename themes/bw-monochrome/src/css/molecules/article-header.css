@@ -5,9 +5,6 @@ ARTICLE HEADER
 
 .m-article-header {
   border-top: solid 1rem var(--black);
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
   margin-bottom: var(--spacing-m);
   padding-top: 1rem;
   position: relative;

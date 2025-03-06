@@ -6,17 +6,15 @@
 .e-content-block {
   background-color: var(--white);
   box-shadow: var(--shadow-panel);
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;;
-  max-width: 56ch;
   padding: var(--spacing-m) var(--s);
   position: relative;
   z-index: var(--z-content);
 }
 
-.e-content-block > * {
-  grid-column: 1 / -1;
+.e-content-block--transparent {
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
 }
 
 @media (--br-m) {
@@ -29,10 +27,4 @@
   .e-content-block {
     background-color: var(--grey-90);
   }
-}
-
-.e-content-block--transparent {
-  background-color: transparent;
-  box-shadow: none;
-  padding: 0;
 }
