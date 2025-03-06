@@ -7,6 +7,7 @@ LIST (DEFAULT)
 {{ define "main" }}
   <main id="site-main" tabindex="-1" class="o-site-main">
     <section class="e-list">
+
       <header class="m-list-header">
         <h1 class="m-list-header__title">{{ .Title }}</h1>
         <p class="m-list-header__subline">{{ .Description }}</p>
@@ -35,34 +36,9 @@ LIST (DEFAULT)
 
         {{ partial "molecules/pagination" . }}
 
-      {{ else if eq .Type "notes" }}
-        {{ $paginator := .Paginate (where .Data.Pages "Type" "notes") 3 }}
-        {{ range $paginator.Pages }}
-          <section class="e-notes e-grid">
-            <article class="o-note e-content-block e-grid__item">
-              <h1 class="u-margin-bottom-none">
-                {{ .Title }}
-              </h1>
-
-              <p>
-                {{ partial "atoms/date" . }}
-              </p>
-
-              {{ .Content | safeHTML }}
-
-              <p>
-                <a href="{{ .Permalink }}" title="View note {{ .Title }}">View this note</a>
-              </p>
-            </article>
-          </section>
-        {{ end }}
-
-        {{ partial "molecules/pagination" . }}
-
       {{ else if eq .Type "drawings" }}
-        <section class="e-drawings e-grid">
         {{ range .Pages }}
-          <article class="o-drawing e-content-block e-grid__item">
+          <article class="o-drawing e-content-block e-content-block--transparent">
             {{ .Content | safeHTML }}
 
             <h1 class="u-margin-bottom-none">
@@ -77,10 +53,9 @@ LIST (DEFAULT)
             </p>
           </article>
         {{ end }}
-        </section>
       {{ end }}
-    </section>
 
+    </section>
   </main>
 
 {{ end }}
