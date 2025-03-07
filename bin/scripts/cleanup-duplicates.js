@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PHOTOS_DIR = path.join(__dirname, 'content/photos');
+const PHOTOS_DIR = path.join(__dirname, '../../content/photos');
 
 // Extract ID from Flickr URLs in content
 function extractPhotoId(content) {
