@@ -11,11 +11,14 @@ Handles high-resolution images responsively.
 
 {{ if $isLocal }}
   <figure class="a-figure a-figure--flickr">
-    <img
-      src="{{ $url }}"
-      alt="{{ $title }}"
-      loading="lazy"
-      data-animation="zoom-in">
+    <picture class="a-picture">
+      <!-- Create a low-quality placeholder -->
+      <img
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" <!-- Tiny transparent placeholder -->
+        data-src="{{ $url }}"
+        alt="{{ $title }}"
+        loading="lazy">
+    </picture>
     {{ if $title }}
       <figcaption>
         {{ $title }}
@@ -29,14 +32,15 @@ Handles high-resolution images responsively.
 
   <figure class="a-figure a-figure--flickr">
     <picture class="a-picture">
-      <source media="(min-width: 1200px)" srcset="{{ $largeUrl }}">
-      <source media="(min-width: 700px)" srcset="{{ $mediumUrl }}">
+      <!-- Use data-srcset for LazyLoad library to handle -->
+      <source media="(min-width: 1200px)" data-srcset="{{ $largeUrl }}">
+      <source media="(min-width: 700px)" data-srcset="{{ $mediumUrl }}">
+      <!-- Very small image placeholder for immediate display -->
       <img
-        src="{{ $smallUrl }}"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" <!-- Tiny transparent placeholder -->
         data-src="{{ $largeUrl }}"
         alt="{{ $title }}"
-        loading="lazy"
-        data-animation="zoom-in">
+        loading="lazy">
     </picture>
     {{ if $title }}
       <figcaption>

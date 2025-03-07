@@ -13,12 +13,20 @@ Picture element with lazy loading
   width: 100%;
 }
 
-/* Blur initial tiny picture for lazy loading effect */
-.a-picture img[loading="lazy"] {
-  filter: blur(20px);
+/* Apply a smoother loading effect with less extreme blur */
+.a-picture img[data-src] {
+  filter: blur(5px); /* Reduced from 20px to reduce flickering */
+  opacity: 0.8;
+  transform: scale(1.03); /* Slight scale to avoid white edges during blur */
+  will-change: filter, opacity, transform; /* Optimize for animation */
 }
 
-.a-picture img[loading="lazy"].is-loaded {
+.a-picture img.is-loaded {
   filter: blur(0);
-  transition: filter var(--ease-in-quad) .333s;
+  opacity: 1;
+  transform: scale(1);
+  transition: 
+    filter 0.4s ease-out,
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
 }
