@@ -48,6 +48,8 @@
     "xml2js": "^0.6.2"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "oauth-1.0a": "^2.2.6",
     "vanilla-lazyload": "^17.8.8"
   }
 }
