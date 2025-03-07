@@ -17,19 +17,16 @@ LIST (PHOTOS)
         {{ range $paginator.Pages }}
           <article class="o-photo e-content-block e-content-block--transparent">
             <a href="{{ .Permalink }}" class="o-photo__link" title="View: {{ .Title }}">
-              {{ with .Params.featured_image }}
-                <img src="/{{ .src }}" 
-                     alt="{{ $.Title }}"
-                     loading="lazy"
-                     class="o-photo__image">
-              {{ else }}
-                {{ with $.Params.flickr }}
-                  <img src="{{ .image_url }}" 
-                       alt="{{ $.Title }}"
-                       loading="lazy"
-                       class="o-photo__image">
+              <div class="o-photo__image-container">
+                {{ if .Params.featured_image }}
+                  {{ $src := .Params.featured_image.src }}
+                  {{ partial "atoms/figure" (dict "src" $src "alt" .Title "lazy" true) }}
+                {{ else if .Params.flickr }}
+                  {{ $imageName := path.Base .Params.flickr.image_url }}
+                  {{ $src := printf "images/photos/%s" $imageName }}
+                  {{ partial "atoms/figure" (dict "src" $src "alt" .Title "lazy" true) }}
                 {{ end }}
-              {{ end }}
+              </div>
               
               <h2 class="o-photo__title">
                 {{ .Title }}

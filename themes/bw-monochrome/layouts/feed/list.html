@@ -13,20 +13,20 @@ LIST (FEED)
 
       {{/* Get articles - exclude list pages by checking for Kind "page" */}}
       {{ $articles := where (where .Site.Pages "Section" "articles") "Kind" "page" }}
-      
+
       {{/* Get drawings - exclude list pages by checking for Kind "page" */}}
       {{ $drawings := where (where .Site.Pages "Section" "drawings") "Kind" "page" }}
-      
+
       {{/* Get photos - exclude list pages by checking for Kind "page" */}}
       {{ $photos := where (where .Site.Pages "Section" "photos") "Kind" "page" }}
-      
+
       {{/* Combine and sort content */}}
       {{ $combined := union (union $articles $drawings) $photos }}
       {{ $sorted := sort $combined "Date" "desc" }}
-      
+
       {{/* Set up pagination */}}
       {{ $paginator := .Paginate $sorted 10 }}
-      
+
       {{ range $paginator.Pages }}
         {{/* ARTICLES */}}
         {{ if eq .Section "articles" }}
@@ -48,7 +48,7 @@ LIST (FEED)
 
         {{/* DRAWINGS */}}
         {{ else if eq .Section "drawings" }}
-          <article class="o-drawing e-content-block e-content-block--transparent">
+          <article class="o-drawing">
             {{ .Content | safeHTML }}
             <h1 class="u-margin-bottom-none">
               {{ .Title }}
@@ -60,25 +60,18 @@ LIST (FEED)
               <a href="{{ .Permalink }}" title="View drawing {{ .Title }}">View this drawing</a>
             </p>
           </article>
-          
+
         {{/* PHOTOS */}}
         {{ else if eq .Section "photos" }}
-          <article class="o-photo e-content-block e-content-block--transparent">
-            <h1>
-              <a href="{{ .Permalink }}" tabindex="-1">{{ .Title }}</a>
+          <article class="o-photo">
+            {{ .Content | safeHTML }}
+            <h1 class="u-margin-bottom-none">
+              {{ .Title }}
             </h1>
-            
-            {{ with .Params.flickr }}
-              <a href="{{ $.Permalink }}" class="o-photo__link-feed">
-                <img src="{{ .image_url }}" 
-                     alt="{{ $.Title }}"
-                     loading="lazy"
-                     class="o-photo__image-feed">
-              </a>
-            {{ end }}
-            
             <p>
               {{ partial "atoms/date" . }}
+            </p>
+            <p>
               <a href="{{ .Permalink }}" title="View photo {{ .Title }}">View this photo</a>
             </p>
           </article>

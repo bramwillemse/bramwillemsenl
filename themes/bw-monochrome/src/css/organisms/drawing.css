@@ -1,19 +1,18 @@
 /*
-PHOTO
+DRAWING
 ----
-Styling for photo items in photo lists and grids
+Styling for drawing
 */
 
-/* Photo component */
-.o-photo {
+.o-drawing {
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
 }
 
-.o-photo > * {
+.o-drawing > * {
   grid-column: 1 / -1;
 }
 
 /* Compact photo for feed */
-/* .o-photo--compact {} */
+/* .o-drawing--compact {} */

@@ -5,52 +5,6 @@ SINGLE (PHOTO)
 
 {{ define "main" }}
   <main id="site-main" tabindex="-1" class="o-site-main">
-    <article class="o-photo-detail">
-      <header class="m-article-header">
-        <div class="m-article-header__content e-content-block e-content-block--transparent">
-          <h1 class="m-article-header__title">{{ .Title }}</h1>
-          
-          <p class="m-article-header__meta">
-            {{ partial "atoms/date" . }}
-          </p>
-          
-          {{ with .Params.tags }}
-            <div class="m-article-header__tags">
-              {{ range . }}
-                <span class="m-tag">{{ . }}</span>
-              {{ end }}
-            </div>
-          {{ end }}
-        </div>
-      </header>
-
-      <section class="o-photo-detail__content e-content-block">
-        {{ .Content }}
-        
-        {{ with .Params.flickr }}
-          <p class="o-photo-detail__source">
-            <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">
-              View on Flickr
-            </a>
-          </p>
-        {{ end }}
-      </section>
-      
-      <footer class="o-photo-detail__footer e-content-block e-content-block--transparent">
-        <nav class="m-article-navigation">
-          {{ with .PrevInSection }}
-            <a class="m-article-navigation__link m-article-navigation__link--prev" href="{{ .Permalink }}">
-              &larr; Previous photo
-            </a>
-          {{ end }}
-          
-          {{ with .NextInSection }}
-            <a class="m-article-navigation__link m-article-navigation__link--next" href="{{ .Permalink }}">
-              Next photo &rarr;
-            </a>
-          {{ end }}
-        </nav>
-      </footer>
-    </article>
+    {{ partial "organisms/photo.html" . }}
   </main>
 {{ end }}

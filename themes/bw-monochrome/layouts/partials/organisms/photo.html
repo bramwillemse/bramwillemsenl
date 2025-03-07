@@ -1,13 +1,24 @@
 <article class="o-photo">
-  <section class="e-content-block e-content-block--transparent">
-    {{ .Content }}
+  {{ .Content }}
 
-    <h1 class="u-margin-bottom-none">
-      {{ .Title }}
-    </h1>
-    <p>
-      {{ partial "atoms/date" . }}
+  <h1 class="u-margin-bottom-none">
+    {{ .Title }}
+  </h1>
+  <p>
+    {{ partial "atoms/date" . }}
+  </p>
+
+  {{ with .Params.flickr }}
+    {{ if .description }}
+      <p class="o-photo__description">
+        {{ .description | markdownify }}
+      </p>
+    {{ end }}
+
+    <p class="o-photo__source">
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">
+        View on Flickr
+      </a>
     </p>
-
-  </section>
+  {{ end }}
 </article>

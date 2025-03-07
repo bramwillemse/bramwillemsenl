@@ -1,13 +1,10 @@
 <article class="o-drawing">
-  <section class="e-content-block e-content-block--transparent">
-    {{ .Content }}
+  {{ .Content }}
 
-    <h1 class="u-margin-bottom-none">
-      {{ .Title }}
-    </h1>
-    <p>
-      {{ partial "atoms/date" . }}
-    </p>
-
-  </section>
+  <h1 class="u-margin-bottom-none">
+    {{ .Title }}
+  </h1>
+  <p>
+    {{ partial "atoms/date" . }}
+  </p>
 </article>
