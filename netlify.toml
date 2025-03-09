@@ -1,7 +1,6 @@
 [build]
-  command = "git lfs pull && yarn build:webpack && yarn build:hugo"
+  command = "yarn build:webpack && yarn build:hugo"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
   HUGO_VERSION = "0.143.1"
-  GIT_LFS_ENABLED = "true"
