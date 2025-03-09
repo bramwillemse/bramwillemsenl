@@ -1,8 +1,7 @@
 [build]
-  command = "./netlify-lfs-fix.sh && yarn build:webpack && yarn build:hugo"
+  command = "git lfs install; git lfs pull && yarn build:webpack && yarn build:hugo"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
   HUGO_VERSION = "0.143.1"
   GIT_LFS_ENABLED = "true"
-  GIT_LFS_FETCH_INCLUDE = "*"
