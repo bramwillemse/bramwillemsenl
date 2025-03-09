@@ -1,5 +1,5 @@
 [build]
-  command = "set -x && echo 'Installing Git LFS...' && git lfs install && echo 'Fetching LFS files...' && git lfs pull && echo 'LFS operations completed' && yarn build:webpack && yarn build:hugo"
+  command = "git lfs pull && yarn build:webpack && yarn build:hugo"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
