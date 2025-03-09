@@ -6,9 +6,11 @@
   "author": "Tania Rascia",
   "license": "MIT",
   "scripts": {
+    "predev": "git lfs fetch --all && git lfs checkout",
     "dev": "run-p dev:*",
     "dev:webpack": "NODE_ENV=development webpack serve --mode development",
     "dev:hugo": "hugo --watch",
+    "prebuild": "git lfs fetch --all && git lfs checkout",
     "build": "run-s build:*",
     "build:flickr": "node bin/flickr-feed.js",
     "build:webpack": "webpack --mode production",
@@ -16,7 +18,11 @@
     "flickr": "node bin/flickr-feed.js",
     "flickr:force": "node bin/flickr-feed.js --force",
     "flickr:sample": "node bin/flickr-feed.js --sample",
-    "flickr:sample-images": "node bin/flickr-feed.js --sample-images"
+    "flickr:sample-images": "node bin/flickr-feed.js --sample-images",
+    "lfs:fetch": "git lfs fetch --all",
+    "lfs:checkout": "git lfs checkout",
+    "lfs:pull": "git lfs fetch --all && git lfs checkout",
+    "lfs:status": "git lfs status"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
