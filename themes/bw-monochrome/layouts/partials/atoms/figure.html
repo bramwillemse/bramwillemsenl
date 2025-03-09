@@ -4,7 +4,7 @@ FIGURE
 Picture element in a figure.
 */}}
 
-<figure class="a-figure">
+<figure class="a-figure {{ $.classes }}">
   {{ with resources.Get .src }}
     {{ $tiny := .Resize "20x" }}
     {{ $small := .Resize "320x" }}

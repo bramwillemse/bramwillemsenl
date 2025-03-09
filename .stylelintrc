@@ -35,6 +35,7 @@
     "no-unknown-animations": true,
     "number-max-precision": 3,
     "property-no-unknown": true,
-    "selector-class-pattern": null
+    "selector-class-pattern": null,
+    "keyframe-block-no-duplicate-selectors": null
   }
 }

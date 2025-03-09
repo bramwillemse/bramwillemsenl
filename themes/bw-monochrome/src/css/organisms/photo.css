@@ -11,6 +11,18 @@ Styling for photo items in photo lists and grids
   grid-template-columns: subgrid;
 }
 
+@media (--br-s) {
+  .o-photo--compact {
+    grid-column: 2 / 4;
+  }
+}
+
+@media (--br-l) {
+  .o-photo--compact {
+    grid-column: 2 / 6;
+  }
+}
+
 .o-photo > * {
   grid-column: 1 / -1;
 }
