@@ -1,5 +1,5 @@
 ---
-title: "Feed"
-description: "All my articles and drawings in one feed."
+title: "The Feed"
+description: "All my writings, shots and creations in one feed."
 url: /feed/
 ---

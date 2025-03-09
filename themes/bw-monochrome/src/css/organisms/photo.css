@@ -1,0 +1,31 @@
+/*
+PHOTO
+----
+Styling for photo items in photo lists and grids
+*/
+
+/* Photo component */
+.o-photo {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+@media (--br-s) {
+  .o-photo--compact {
+    grid-column: 2 / 4;
+  }
+}
+
+@media (--br-l) {
+  .o-photo--compact {
+    grid-column: 2 / 6;
+  }
+}
+
+.o-photo > * {
+  grid-column: 1 / -1;
+}
+
+/* Compact photo for feed */
+/* .o-photo--compact {} */

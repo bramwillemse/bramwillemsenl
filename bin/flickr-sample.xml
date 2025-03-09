@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Flickr Test Feed</title>
+    <link>https://www.flickr.com/photos/bramwillemse/</link>
+    <description>Test feed for bramwillemse.nl</description>
+    <item>
+      <title>Test Photo 1</title>
+      <link>https://www.flickr.com/photos/test/1234/</link>
+      <description>&lt;p&gt;&lt;a href="https://www.flickr.com/people/test/"&gt;Test User&lt;/a&gt; posted a photo:&lt;/p&gt; &lt;p&gt;&lt;a href="https://www.flickr.com/photos/test/1234/" title="Test Photo 1"&gt;&lt;img src="https://picsum.photos/600/400" width="600" height="400" alt="Test Photo 1" /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+      <pubDate>Wed, 06 Mar 2025 12:00:00 GMT</pubDate>
+      <dc:creator>bramwillemse</dc:creator>
+      <category scheme="https://www.flickr.com/photos/tags/" term="test"/>
+      <category scheme="https://www.flickr.com/photos/tags/" term="sample"/>
+    </item>
+    <item>
+      <title>Test Photo 2</title>
+      <link>https://www.flickr.com/photos/test/5678/</link>
+      <description>&lt;p&gt;&lt;a href="https://www.flickr.com/people/test/"&gt;Test User&lt;/a&gt; posted a photo:&lt;/p&gt; &lt;p&gt;&lt;a href="https://www.flickr.com/photos/test/5678/" title="Test Photo 2"&gt;&lt;img src="https://picsum.photos/600/400?random=2" width="600" height="400" alt="Test Photo 2" /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+      <pubDate>Tue, 05 Mar 2025 12:00:00 GMT</pubDate>
+      <dc:creator>bramwillemse</dc:creator>
+      <category scheme="https://www.flickr.com/photos/tags/" term="test"/>
+      <category scheme="https://www.flickr.com/photos/tags/" term="example"/>
+    </item>
+  </channel>
+</rss>

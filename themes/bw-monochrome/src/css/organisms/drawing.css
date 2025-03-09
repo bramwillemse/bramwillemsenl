@@ -1,0 +1,18 @@
+/*
+DRAWING
+----
+Styling for drawing
+*/
+
+.o-drawing {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.o-drawing > * {
+  grid-column: 1 / -1;
+}
+
+/* Compact photo for feed */
+/* .o-drawing--compact {} */

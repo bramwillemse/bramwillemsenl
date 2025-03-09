@@ -1,0 +1,45 @@
+{{/*
+LIST (PHOTOS)
+--------------
+*/}}
+
+{{ define "main" }}
+  <main id="site-main" tabindex="-1" class="o-site-main">
+    <section class="e-list">
+      <header class="m-list-header">
+        <h1 class="m-list-header__title">{{ .Title }}</h1>
+        <p class="m-list-header__subline">{{ .Description }}</p>
+      </header>
+
+      {{ $paginator := .Paginate (where (where .Pages "Section" "photos") "Kind" "page") 12 }}
+      
+      <div class="e-photos-grid">
+        {{ range $paginator.Pages }}
+          <article class="o-photo e-content-block e-content-block--transparent">
+            <a href="{{ .Permalink }}" class="o-photo__link" title="View: {{ .Title }}">
+              <div class="o-photo__image-container">
+                {{ if .Params.featured_image }}
+                  {{ $src := .Params.featured_image.src }}
+                  {{ partial "atoms/figure" (dict "src" $src "alt" .Title "lazy" true) }}
+                {{ else if .Params.flickr }}
+                  {{ $imageName := path.Base .Params.flickr.image_url }}
+                  {{ $src := printf "images/photos/%s" $imageName }}
+                  {{ partial "atoms/figure" (dict "src" $src "alt" .Title "lazy" true) }}
+                {{ end }}
+              </div>
+              
+              <h2 class="o-photo__title">
+                {{ .Title }}
+              </h2>
+              <p class="o-photo__date">
+                {{ partial "atoms/date" . }}
+              </p>
+            </a>
+          </article>
+        {{ end }}
+      </div>
+
+      {{ partial "molecules/pagination" . }}
+    </section>
+  </main>
+{{ end }}

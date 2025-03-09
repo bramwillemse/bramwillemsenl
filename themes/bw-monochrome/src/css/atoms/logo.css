@@ -82,7 +82,7 @@ a:focus-visible .a-logo__image {
   transform: translate3d(-50%, -50%, 0);
   transform-origin: left center;
   transition: .3s var(--ease-in-out-cubic);
-  transition-property: transform opacity left;
+  transition-property: transform, opacity, left;
   visibility: hidden;
   white-space: nowrap;
 }

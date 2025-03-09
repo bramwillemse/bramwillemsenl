@@ -1,0 +1,5 @@
+assets/images/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+assets/images/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+assets/images/**/*.png filter=lfs diff=lfs merge=lfs -text
+assets/images/**/*.gif filter=lfs diff=lfs merge=lfs -text
+assets/images/**/*.webp filter=lfs diff=lfs merge=lfs -text

@@ -4,30 +4,33 @@ LIST (FEED)
 */}}
 
 {{ define "main" }}
+  {{/* Get articles - exclude list pages by checking for Kind "page" */}}
+  {{ $articles := where (where .Site.Pages "Section" "articles") "Kind" "page" }}
+
+  {{/* Get drawings - exclude list pages by checking for Kind "page" */}}
+  {{ $drawings := where (where .Site.Pages "Section" "drawings") "Kind" "page" }}
+
+  {{/* Get photos - exclude list pages by checking for Kind "page" */}}
+  {{ $photos := where (where .Site.Pages "Section" "photos") "Kind" "page" }}
+
+  {{/* Combine and sort content */}}
+  {{ $combined := union (union $articles $drawings) $photos }}
+  {{ $sorted := sort $combined "Date" "desc" }}
+
+  {{/* Set up pagination */}}
+  {{ $paginator := .Paginate $sorted 10 }}
+
   <main id="site-main" tabindex="-1" class="o-site-main">
-    <section class="e-list">
-      <header class="m-list-header">
+    <section class="e-list e-list--timeline">
+      <header class="m-list-header e-list__header">
         <h1 class="m-list-header__title">{{ .Title }}</h1>
         <p class="m-list-header__subline">{{ .Description }}</p>
       </header>
 
-      {{/* Get articles - exclude list pages by checking for Kind "page" */}}
-      {{ $articles := where (where .Site.Pages "Section" "articles") "Kind" "page" }}
-
-      {{/* Get drawings - exclude list pages by checking for Kind "page" */}}
-      {{ $drawings := where (where .Site.Pages "Section" "drawings") "Kind" "page" }}
-
-      {{/* Combine and sort content */}}
-      {{ $combined := union $articles $drawings }}
-      {{ $sorted := sort $combined "Date" "desc" }}
-
-      {{/* Set up pagination */}}
-      {{ $paginator := .Paginate $sorted 10 }}
-
       {{ range $paginator.Pages }}
         {{/* ARTICLES */}}
         {{ if eq .Section "articles" }}
-          <article class="o-article o-article--compact e-content-block">
+          <article class="o-article o-article--compact e-content-block e-list__item">
             <h1>
               <a href="{{ .Permalink }}" tabindex="-1">
                 {{ if (.Params.title_short) }}
@@ -45,7 +48,7 @@ LIST (FEED)
 
         {{/* DRAWINGS */}}
         {{ else if eq .Section "drawings" }}
-          <article class="o-drawing e-content-block e-content-block--transparent">
+          <article class="o-drawing e-list__item ">
             {{ .Content | safeHTML }}
             <h1 class="u-margin-bottom-none">
               {{ .Title }}
@@ -55,6 +58,21 @@ LIST (FEED)
             </p>
             <p>
               <a href="{{ .Permalink }}" title="View drawing {{ .Title }}">View this drawing</a>
+            </p>
+          </article>
+
+        {{/* PHOTOS */}}
+        {{ else if eq .Section "photos" }}
+          <article class="o-photo o-photo--compact e-list__item ">
+            {{ $src := .Params.featured_image.src }}
+            {{ $title := .Params.title }}
+            {{ $classes := "o-photo__figure" }}
+            {{ partial "atoms/figure" (dict "src" $src "title" $title "classes" $classes) }}
+            <h1 class="u-margin-bottom-none">
+              {{ .Title }}
+            </h1>
+            <p>
+              {{ partial "atoms/date" . }} <a href="{{ .Permalink }}" title="View photo {{ .Title }}">View this photo</a>
             </p>
           </article>
         {{ end }}

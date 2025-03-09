@@ -4,7 +4,7 @@ FIGURE
 Picture element in a figure.
 */}}
 
-<figure class="a-figure">
+<figure class="a-figure {{ $.classes }}">
   {{ with resources.Get .src }}
     {{ $tiny := .Resize "20x" }}
     {{ $small := .Resize "320x" }}
@@ -13,11 +13,13 @@ Picture element in a figure.
     {{ $xlarge := .Resize "2160x" }}
 
     <picture class="a-picture">
+      <!-- Use data-srcset for LazyLoad library compatibility -->
       <source data-srcset="{{ $xlarge.RelPermalink }}" media="(min-width: 1200px)">
       <source data-srcset="{{ $large.RelPermalink }}" media="(min-width: 700px)">
       <source data-srcset="{{ $medium.RelPermalink }}" media="(min-width: 300px)">
+      <!-- Use a transparent 1px GIF instead of tiny thumbnail -->
       <img
-        src="{{ $tiny.RelPermalink }}"
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         data-src="{{ $small.RelPermalink }}"
         alt="{{ $.alt }}"
         width="{{ $.width }}"

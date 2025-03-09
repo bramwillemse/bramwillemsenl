@@ -1,22 +1,20 @@
 .m-list-header {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--spacing-s);
-  padding-left: var(--spacing-xs);
-  padding-right: var(--spacing-xs);
   width: 100%;
 }
 
 @media (--br-s) {
   .m-list-header {
     align-items: center;
-    margin-bottom: var(--spacing-m);
   }
 }
 
 .m-list-header__title {
   display: inline;
+  letter-spacing: .033em;
   margin-bottom: 0;
+  text-transform: uppercase;
 }
 .m-list-header__subline {
   font-style: italic;

@@ -6,12 +6,17 @@
   "author": "Tania Rascia",
   "license": "MIT",
   "scripts": {
-    "dev": "npx run-p dev:*",
+    "dev": "run-p dev:*",
     "dev:webpack": "NODE_ENV=development webpack serve --mode development",
     "dev:hugo": "hugo --watch",
-    "build": "npx run-s build:*",
+    "build": "run-s build:*",
+    "build:flickr": "node bin/flickr-feed.js",
     "build:webpack": "webpack --mode production",
-    "build:hugo": "hugo --environment production"
+    "build:hugo": "hugo --environment production",
+    "flickr": "node bin/flickr-feed.js",
+    "flickr:force": "node bin/flickr-feed.js --force",
+    "flickr:sample": "node bin/flickr-feed.js --sample",
+    "flickr:sample-images": "node bin/flickr-feed.js --sample-images"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
@@ -19,6 +24,7 @@
     "@babel/preset-env": "^7.26.9",
     "@webpack-cli/serve": "^2.0.5",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.8.1",
     "babel-loader": "^9.2.1",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.2",
@@ -33,14 +39,18 @@
     "postcss-loader": "^8.1.1",
     "postcss-preset-env": "^10.1.5",
     "postcss-reporter": "^7.1.0",
-    "stylelint": "^16.2.1",
-    "stylelint-config-standard": "^36.0.0",
+    "postcss-selector-parser": "^7.1.0",
+    "stylelint": "^16.15.0",
+    "stylelint-config-standard": "^37.0.0",
     "stylelint-order": "^6.0.4",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.2"
+    "webpack-dev-server": "^5.0.2",
+    "xml2js": "^0.6.2"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "oauth-1.0a": "^2.2.6",
     "vanilla-lazyload": "^17.8.8"
   }
 }
