@@ -1,0 +1,4 @@
+[lfs]
+	fetchexclude = *
+	smudgecommand = git-lfs smudge -- %f
+	cleancommand = git-lfs clean -- %f
