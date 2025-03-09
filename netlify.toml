@@ -1,5 +1,5 @@
 [build]
-  command = "git lfs install; git lfs pull && yarn build:webpack && yarn build:hugo"
+  command = "set -x && which git && git --version && echo 'Checking for Git LFS...' && (git lfs --version || echo 'Git LFS not found') && echo 'Installing Git LFS...' && git lfs install -v && echo 'Fetching LFS files...' && git lfs pull -v && echo 'LFS operations completed' && yarn build:webpack && yarn build:hugo"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
