@@ -1,11 +1,14 @@
 /*
 LIST
---------
+----
+Layout for lists of content items. Subgrid of global grid.
 */
 
 .e-list {
-  display: contents;
-  /* grid-column: 1 / -1; */
+  display: grid;
+  grid-column: 1 / -1;
+  grid-gap: var(--l);
+  grid-template-columns: subgrid;
 }
 
 .e-list__header {
@@ -15,14 +18,26 @@ LIST
 .e-list__item {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: subgrid;
+  grid-template-columns: subgrid
 }
 
-.e-list--timeline .e-list__item {
-  grid-column: 1 / 3;
+.e-list__photo > * {
+  grid-column: 1 / -1;
 }
 
-.e-list--timeline .e-list__item:nth-child(odd) {
-  grid-column: 3 / -1;
+@media (--br-s) {
+  .e-list {
+    grid-gap: var(--xl);
+  }
+}
+
+@media (--br-l) {
+  .e-list--timeline .e-list__item > * {
+    grid-column: 2 / 4;
+  }
+
+  .e-list--timeline .e-list__item:nth-child(odd) > * {
+    grid-column: 4 / 6;
+  }
 }
 
