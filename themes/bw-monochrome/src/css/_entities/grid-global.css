@@ -1,15 +1,10 @@
 .e-grid-global {
   align-items: start;
   display: grid;
-  grid-gap: var(--xl);
+  grid-gap: var(--l);
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto;
   margin: 0 var(--spacing-xs) var(--spacing-l);
-}
-
-@media (--br-s) {
-  .e-grid-global {
-    grid-gap: var(--l);
-  }
 }
 
 @media (--br-m) {
@@ -21,7 +16,6 @@
 
 @media (--br-l) {
   .e-grid-global {
-    grid-gap: var(--xl);
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: auto auto;
   }
