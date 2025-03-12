@@ -13,8 +13,9 @@ require('dotenv').config(); // Load environment variables from .env file
 const FLICKR_USER_ID = process.env.FLICKR_USER_ID;
 const FLICKR_API_KEY = process.env.FLICKR_API_KEY;
 const FLICKR_API_SECRET = process.env.FLICKR_API_SECRET;
-// Use the atom format instead of RSS which is more reliable
-const FLICKR_FEED_URL = `https://www.flickr.com/services/feeds/photos_public.gne?id=${FLICKR_USER_ID}`;
+// Use the Flickr API instead of RSS feed to get more photos
+const FLICKR_FEED_URL = `https://www.flickr.com/services/feeds/photos_public.gne?id=${FLICKR_USER_ID}`; // Fallback
+const FLICKR_API_URL = `https://www.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=${FLICKR_API_KEY}&user_id=${FLICKR_USER_ID}&extras=date_taken,description,tags,url_m&per_page=100&format=json&nojsoncallback=1`;
 // Limit to 200 most recent photos 
 const PHOTO_LIMIT = 200;
 const CONTENT_DIR = path.join(__dirname, '../content/photos');
@@ -375,13 +376,61 @@ function slugify(title) {
     .replace(/^-+|-+$/g, '');
 }
 
-// Create a Hugo content file for a photo
+/**
+ * Create a Hugo content file for a photo
+ * Handles data from both the Flickr API and RSS/Atom feed formats
+ * @param {Object} photo - Photo data from Flickr API or RSS/Atom feed
+ * @returns {Promise<string>} - The slug of the created content file
+ */
 async function createPhotoContent(photo) {
-  // Extract data from the photo (handling both RSS and Atom formats)
+  // Extract data from the photo (handling both API and RSS/Atom formats)
   let title, link, pubDate, takenDate, description, imageUrl, author, categories, photoId;
 
+  // Check if it's Flickr API format (has id field directly)
+  if (photo.id) {
+    photoId = photo.id;
+    title = photo.title || 'Untitled Photo';
+    
+    // Construct photo page URL from photo ID and owner
+    link = `https://www.flickr.com/photos/${FLICKR_USER_ID}/${photoId}`;
+    
+    // Get publication date
+    pubDate = photo.dateupload ? new Date(photo.dateupload * 1000) : new Date();
+    
+    // Get date taken if available
+    if (photo.datetaken) {
+      try {
+        takenDate = new Date(photo.datetaken);
+      } catch (e) {
+        takenDate = pubDate;
+        console.log(`Failed to parse taken date: ${photo.datetaken}, using upload date instead`);
+      }
+    } else {
+      takenDate = pubDate;
+    }
+    
+    // Get image URL - either from extras or construct it
+    if (photo.url_m) {
+      imageUrl = photo.url_m;
+    } else {
+      // Construct URL if not directly provided
+      // Format: https://live.staticflickr.com/{server}/{id}_{secret}_m.jpg
+      imageUrl = `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`;
+    }
+    
+    // Get description and author
+    description = photo.description ? photo.description._content || photo.description : '';
+    author = 'Bram Willemse'; // Default author
+    
+    // Get tags (comma-separated string in API response)
+    if (photo.tags) {
+      categories = photo.tags.split(' ').filter(tag => tag.trim() !== '');
+    } else {
+      categories = [];
+    }
+  }
   // Check if it's RSS format
-  if (photo.title && photo.link && photo.pubDate) {
+  else if (photo.title && photo.link && photo.pubDate) {
     title = photo.title[0];
     link = photo.link[0];
     pubDate = new Date(photo.pubDate[0]);
@@ -551,17 +600,19 @@ ${isLocalImage
   return slug;
 }
 
-// Main function to fetch and process the feed
+/**
+ * Main function to fetch and process photos from Flickr
+ * Uses Flickr API to fetch up to 500 photos (much more than the RSS feed limit of 20)
+ */
 async function fetchAndProcessFeed() {
   try {
-    let xmlData;
+    let photoData = [];
 
     if (USE_SAMPLE) {
       console.log('Using sample feed data for testing...');
 
       if (!fs.existsSync(SAMPLE_FILE_PATH)) {
         console.error(`Sample file not found at ${SAMPLE_FILE_PATH}`);
-
         // Create sample file with minimal structure for testing
         const sampleXml = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -594,141 +645,222 @@ async function fetchAndProcessFeed() {
         console.log(`Created sample file at ${SAMPLE_FILE_PATH}`);
       }
 
-      xmlData = fs.readFileSync(SAMPLE_FILE_PATH, 'utf8');
+      // Parse sample XML data
+      const xmlData = fs.readFileSync(SAMPLE_FILE_PATH, 'utf8');
+      const parser = new xml2js.Parser();
+      const result = await parser.parseStringPromise(xmlData);
+      
+      if (result.rss && result.rss.channel && result.rss.channel[0].item) {
+        photoData = result.rss.channel[0].item;
+      } else if (result.feed && result.feed.entry) {
+        photoData = result.feed.entry;
+      }
     } else {
-      console.log('Fetching Flickr feed...');
+      console.log('Fetching photos from Flickr API...');
 
-      // Add retry logic
-      let attempts = 0;
-      const maxAttempts = 3;
-      let response;
+      try {
+        // Use pagination to fetch up to 200 photos (2 pages of 100 photos each)
+        let allPhotos = [];
+        const maxPages = Math.ceil(PHOTO_LIMIT / 100); // 2 pages for 200 photos
 
-      while (attempts < maxAttempts) {
-        try {
-          console.log(`Attempt ${attempts + 1} of ${maxAttempts}...`);
-          response = await api.get(FLICKR_FEED_URL);
-          xmlData = response.data;
-          break; // If successful, exit the retry loop
-        } catch (err) {
-          attempts++;
-          if (attempts >= maxAttempts) {
-            throw err; // Rethrow if we've exhausted all attempts
+        for (let currentPage = 1; currentPage <= maxPages; currentPage++) {
+          // Add page parameter to URL
+          const paginatedUrl = `${FLICKR_API_URL}&page=${currentPage}`;
+          
+          console.log(`Fetching page ${currentPage} of ${maxPages} from Flickr API...`);
+          
+          // Add delay between page requests to avoid rate limiting
+          if (currentPage > 1) {
+            console.log('Waiting 3 seconds before fetching next page...');
+            await new Promise(resolve => setTimeout(resolve, 3000));
           }
+          
+          const response = await axios.get(paginatedUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 BramWillemseWebsite/1.0 (https://bramwillemse.nl)',
+              'Accept': 'application/json',
+              'Referer': 'https://bramwillemse.nl'
+            },
+            timeout: 15000
+          });
+          
+          if (response.data && response.data.photos && response.data.photos.photo && response.data.photos.photo.length > 0) {
+            console.log(`Successfully fetched ${response.data.photos.photo.length} photos from page ${currentPage}`);
+            allPhotos = [...allPhotos, ...response.data.photos.photo];
+            
+            // If we've hit the total number of photos available, break out of the loop
+            if (response.data.photos.page >= response.data.photos.pages) {
+              console.log(`Reached the last page (${response.data.photos.page}) of photos`);
+              break;
+            }
+          } else {
+            console.warn(`No photos returned from page ${currentPage} or invalid response format`);
+            break;
+          }
+        }
+        
+        if (allPhotos.length > 0) {
+          console.log(`Successfully fetched a total of ${allPhotos.length} photos from Flickr API`);
+          photoData = allPhotos;
+        } else {
+          throw new Error('No photos returned from API or invalid response format');
+        }
+      } catch (apiError) {
+        console.error(`Error fetching from Flickr API: ${apiError.message}`);
+        console.log('Falling back to RSS feed...');
+        
+        // Fallback to the RSS feed (only gives us 20 photos)
+        // Add retry logic for the RSS feed
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        while (attempts < maxAttempts) {
+          try {
+            console.log(`RSS feed attempt ${attempts + 1} of ${maxAttempts}...`);
+            const response = await api.get(FLICKR_FEED_URL);
+            const xmlData = response.data;
+            
+            const parser = new xml2js.Parser();
+            const result = await parser.parseStringPromise(xmlData);
+            
+            // Check for different feed formats (RSS or Atom)
+            if (result.rss && result.rss.channel && result.rss.channel[0].item) {
+              // Handle RSS format
+              photoData = result.rss.channel[0].item;
+              break;
+            } else if (result.feed && result.feed.entry) {
+              // Handle Atom format
+              photoData = result.feed.entry;
+              break;
+            } else {
+              throw new Error('No photos found in the feed or invalid feed format');
+            }
+          } catch (err) {
+            attempts++;
+            if (attempts >= maxAttempts) {
+              throw err; // Rethrow if we've exhausted all attempts
+            }
 
-          // Wait before retrying (exponential backoff)
-          const delay = Math.pow(2, attempts) * 1000;
-          console.log(`Request failed, retrying in ${delay/1000} seconds...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+            // Wait before retrying (exponential backoff)
+            const delay = Math.pow(2, attempts) * 1000;
+            console.log(`RSS feed request failed, retrying in ${delay/1000} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
         }
       }
     }
-
-    const parser = new xml2js.Parser();
-    const result = await parser.parseStringPromise(xmlData);
 
     const existingSlugs = getExistingPhotoSlugs();
     const existingPhotoIds = getExistingFlickrIds();
     console.log(`Found ${existingSlugs.length} existing photos`);
-
-    // Check for different feed formats (RSS or Atom)
-    let items = [];
-
-    if (result.rss && result.rss.channel && result.rss.channel[0].item) {
-      // Handle RSS format
-      items = result.rss.channel[0].item;
-    } else if (result.feed && result.feed.entry) {
-      // Handle Atom format
-      items = result.feed.entry;
-    } else {
-      console.log('No photos found in the feed. The user might not exist or have no public photos.');
-      return;
-    }
-
-    console.log(`Found ${items.length} photos in the Flickr feed`);
+    console.log(`Found ${photoData.length} photos in Flickr`);
 
     // Limit the number of photos to process
-    const itemsToProcess = items.slice(0, PHOTO_LIMIT);
+    const itemsToProcess = photoData.slice(0, PHOTO_LIMIT);
     console.log(`Processing ${itemsToProcess.length} most recent photos`);
 
     let newPhotos = 0;
+    let updatedPhotos = 0;
+    let downloadedPhotos = 0;
 
-    for (let i = 0; i < itemsToProcess.length; i++) {
-      const item = itemsToProcess[i];
-
-      // Extract the photo ID first to check if we already have it
-      let photoId = null;
-      let photoLink = '';
+    // Process photos in larger batches since we're using paid API
+    const BATCH_SIZE = 20; // Increase batch size for paid API
+    const batches = [];
+    
+    // Split photos into batches
+    for (let i = 0; i < itemsToProcess.length; i += BATCH_SIZE) {
+      batches.push(itemsToProcess.slice(i, i + BATCH_SIZE));
+    }
+    
+    console.log(`Split processing into ${batches.length} batches of ${BATCH_SIZE} photos`);
+    
+    // Process each batch with delays between batches
+    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+      const batch = batches[batchIndex];
+      console.log(`\nProcessing batch ${batchIndex + 1} of ${batches.length}...`);
       
-      // Check RSS format
-      if (item.link && item.link[0] && typeof item.link[0] === 'string') {
-        photoLink = item.link[0];
-      } 
-      // Check Atom format
-      else if (item.link && Array.isArray(item.link)) {
-        const links = item.link;
-        const photoLinkObj = links.find(l => l.$ && l.$.rel === 'alternate');
-        if (photoLinkObj && photoLinkObj.$ && photoLinkObj.$.href) {
-          photoLink = photoLinkObj.$.href;
+      // Minimal delay between batches is sufficient for paid API
+      if (batchIndex > 0) {
+        console.log(`Small delay between batches to prevent rate limiting...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      // Process photos in current batch
+      for (let i = 0; i < batch.length; i++) {
+        const item = batch[i];
+        const photoIndex = batchIndex * BATCH_SIZE + i + 1;
+        
+        // No delay needed between photos when using paid API
+        // We've already implemented batch processing which should be sufficient
+        
+        // Extract photo ID based on data source (API or RSS/Atom)
+        let photoId = null;
+        
+        // API format (directly provides id)
+        if (item.id) {
+          photoId = item.id;
+        } 
+        // RSS/Atom format (need to extract from link)
+        else {
+          let photoLink = '';
+          
+          // Check RSS format
+          if (item.link && item.link[0] && typeof item.link[0] === 'string') {
+            photoLink = item.link[0];
+          } 
+          // Check Atom format
+          else if (item.link && Array.isArray(item.link)) {
+            const links = item.link;
+            const photoLinkObj = links.find(l => l.$ && l.$.rel === 'alternate');
+            if (photoLinkObj && photoLinkObj.$ && photoLinkObj.$.href) {
+              photoLink = photoLinkObj.$.href;
+            }
+          }
+          
+          // Extract photo ID from link
+          if (photoLink && typeof photoLink === 'string') {
+            const idMatch = photoLink.match(/\/photos\/[^\/]+\/(\d+)/);
+            photoId = idMatch ? idMatch[1] : null;
+          }
+        }
+        
+        if (!photoId) {
+          console.warn(`Couldn't extract photo ID for item ${photoIndex}, skipping...`);
+          continue;
+        }
+        
+        const existingFile = existingPhotoIds[photoId];
+        const isUpdate = FORCE_UPDATE && existingFile;
+        
+        // Skip if we already have this photo and not forcing update
+        if (existingFile && !FORCE_UPDATE) {
+          console.log(`Skipping photo ID ${photoId} (already exists as ${existingFile})`);
+          continue;
+        }
+
+        try {
+          const slug = await createPhotoContent(item);
+          downloadedPhotos++;
+          
+          if (isUpdate) {
+            console.log(`Updated photo ${photoIndex}/${itemsToProcess.length}: ${slug} (previously ${existingFile})`);
+            updatedPhotos++;
+          } else {
+            console.log(`Added new photo ${photoIndex}/${itemsToProcess.length}: ${slug}`);
+            newPhotos++;
+          }
+        } catch (error) {
+          console.error(`Error processing photo ${photoId}: ${error.message}`);
         }
       }
       
-      // Extract photo ID from link
-      if (photoLink && typeof photoLink === 'string') {
-        const idMatch = photoLink.match(/\/photos\/[^\/]+\/(\d+)/);
-        photoId = idMatch ? idMatch[1] : null;
-      }
-      
-      // Skip if we already have this photo by ID (unless forced update)
-      if (photoId && existingPhotoIds[photoId] && !FORCE_UPDATE) {
-        console.log(`Skipping photo ID ${photoId} (already exists as ${existingPhotoIds[photoId]})`);
-        continue;
-      }
-
-      // Handle both RSS and Atom formats for checking existing items
-      let itemTitle, itemDate, dateSlugPart;
-
-      // RSS format
-      if (item.title && item.pubDate) {
-        itemTitle = item.title[0];
-        itemDate = new Date(item.pubDate[0]);
-      }
-      // Atom format
-      else if (item.title && item.published) {
-        itemTitle = item.title[0]._ || item.title[0];
-        itemDate = new Date(item.published[0]);
-      }
-      // Fallback
-      else {
-        itemTitle = "Untitled";
-        itemDate = new Date();
-      }
-
-      dateSlugPart = itemDate.toISOString().split('T')[0];
-      const potentialSlugs = existingSlugs.filter(slug =>
-        slug.startsWith(dateSlugPart) && slug.includes(slugify(itemTitle))
-      );
-
-      // Skip if we already have this photo by slug pattern (unless forced update)
-      if (potentialSlugs.length > 0 && !FORCE_UPDATE) {
-        console.log(`Skipping "${itemTitle}" (already exists with similar slug)`);
-        continue;
-      }
-
-      // Add a delay between processing photos to avoid rate limiting
-      if (i > 0) {
-        console.log('Waiting 1 second before processing next photo to avoid rate limiting...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-
-      const slug = await createPhotoContent(item);
-      console.log(`Added new photo: ${slug}`);
-      newPhotos++;
+      console.log(`Completed batch ${batchIndex + 1}`);
     }
 
-    console.log(`Added ${newPhotos} new photos`);
-
+    console.log(`Successfully processed ${downloadedPhotos} out of ${itemsToProcess.length} photos`);
+    console.log(`Added ${newPhotos} new photos, updated ${updatedPhotos} existing photos`);
   } catch (error) {
-    console.error('Error fetching or processing Flickr feed:');
+    console.error('Error fetching or processing Flickr photos:');
     console.error(error);
     process.exit(1);
   }
