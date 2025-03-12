@@ -4,7 +4,7 @@ title = "Bram Willemse"
 theme = "bw-monochrome"
 
 [pagination]
-pagerSize = 8
+pagerSize = 16
 path = "page"
 
 # RSS, categories and tags disabled for an easy start

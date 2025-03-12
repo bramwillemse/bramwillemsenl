@@ -2,21 +2,22 @@
 {{/*
 LIST (DEFAULT)
 --------------
+This template handles displaying a single content type (articles, drawings, or photos)
 */}}
 
 {{ define "main" }}
   <main id="site-main" tabindex="-1" class="o-site-main">
-    <section class="e-list">
-
-      <header class="m-list-header">
+    <section class="e-list e-list--timeline">
+      <header class="m-list-header e-list__header">
         <h1 class="m-list-header__title">{{ .Title }}</h1>
         <p class="m-list-header__subline">{{ .Description }}</p>
       </header>
 
-      {{ if eq .Type "articles" }}
-        {{ $paginator := .Paginate (where .Data.Pages "Type" "articles") }}
-        {{ range $paginator.Pages }}
-          <article class="o-article o-article--compact e-content-block">
+      {{ $paginator := .Paginate .Pages }}
+      {{ range $paginator.Pages }}
+        {{/* ARTICLES */}}
+        {{ if eq $.Type "articles" }}
+          <article class="o-article o-article--compact e-content-block e-list__item">
             <h1>
               <a href="{{ .Permalink }}" tabindex="-1">
                 {{ if (.Params.title_short) }}
@@ -30,32 +31,43 @@ LIST (DEFAULT)
             <p>{{ .Params.introduction | safeHTML }}</p>
 
             {{ partial "atoms/button" (dict "ariaLabel" .Title "icon" "read" "label" "Let me read this" "url" .Permalink) }}
-
           </article>
-        {{ end }}
 
-        {{ partial "molecules/pagination" . }}
+        {{/* DRAWINGS */}}
+        {{ else if eq $.Type "drawings" }}
+          <article class="o-drawing e-list__item">
+            <div class="e-list__item-content">
+              {{ .Content | safeHTML }}
+            </div>
 
-      {{ else if eq .Type "drawings" }}
-        {{ range .Pages }}
-          <article class="o-drawing e-content-block e-content-block--transparent">
-            {{ .Content | safeHTML }}
+            <div class="e-list__item-info">
+              <h1 class="u-margin-bottom-none">
+                {{ .Title }}
+              </h1>
+              <p>
+                {{ partial "atoms/date" . }}
+                <a href="{{ .Permalink }}" title="View drawing {{ .Title }}">View this drawing</a>
+              </p>
+            </div>
+          </article>
 
-            <h1 class="u-margin-bottom-none">
-              {{ .Title }}
-            </h1>
-            <p>
-              {{ partial "atoms/date" . }}
-            </p>
+        {{/* PHOTOS */}}
+        {{ else if eq $.Type "photos" }}
+          <article class="o-photo o-photo--compact e-list__item e-list__photo">
+            {{ $src := .Params.featured_image.src }}
+            {{ $title := .Params.title }}
+            {{ $classes := "o-photo__figure e-list__item-content" }}
+            {{ partial "atoms/figure" (dict "src" $src "title" $title "classes" $classes) }}
 
-            <p>
-              <a href="{{ .Permalink }}" title="View drawing {{ .Title }}">View this drawing</a>
-            </p>
+            <div class="e-list__item-info">
+              <h1 class="u-margin-bottom-none">{{ .Title }}</h1>
+              <p>{{ partial "atoms/date" . }} <a href="{{ .Permalink }}" title="View photo {{ .Title }}">View this photo</a></p>
+            </div>
           </article>
         {{ end }}
       {{ end }}
 
+      {{ partial "molecules/pagination" . }}
     </section>
   </main>
-
 {{ end }}

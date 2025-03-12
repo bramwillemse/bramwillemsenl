@@ -40,12 +40,15 @@ Styles specific to the homepage components.
   .e-homepage__header {
     grid-column: span 4;
   }
+
+  .e-homepage__card {
+    grid-row: 3 / 4;
+  }
 }
 
 @media (--br-l) {
   .e-homepage__card {
     grid-column: span 2;
-    grid-row: 3 / 4;
   }
 }
 

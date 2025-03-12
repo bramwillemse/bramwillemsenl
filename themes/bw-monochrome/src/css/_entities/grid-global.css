@@ -10,16 +10,16 @@
 @media (--br-m) {
   .e-grid-global {
     grid-gap: var(--xl);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: auto auto;
     margin: 0 var(--spacing-xl) var(--spacing-xl);
   }
 }
 
-@media (--br-l) {
+/* @media (--br-l) {
   .e-grid-global {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: auto auto;
   }
-}
+} */
 
 @media (--br-xl) {
   .e-grid-global {
