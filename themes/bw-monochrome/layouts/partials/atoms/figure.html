@@ -23,13 +23,13 @@ Picture element in a figure.
       <source data-srcset="{{ $xlarge.RelPermalink }}" media="(min-width: 1200px)">
       <source data-srcset="{{ $large.RelPermalink }}" media="(min-width: 700px)">
       <source data-srcset="{{ $medium.RelPermalink }}" media="(min-width: 300px)">
-      <!-- Use a transparent 1px GIF instead of tiny thumbnail -->
+      <!-- Use tiny thumbnail for better loading experience -->
       <img
-        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        src="{{ $tiny.RelPermalink }}"
         data-src="{{ $small.RelPermalink }}"
         alt="{{ $.alt }}"
-        width="{{ $.width }}"
-        height="{{ $.height }}"
+        {{ if $.width }}width="{{ $.width }}"{{ else }}width="{{ $image.Width }}"{{ end }}
+        {{ if $.height }}height="{{ $.height }}"{{ else }}height="{{ $image.Height }}"{{ end }}
         loading="lazy">
     </picture>
 

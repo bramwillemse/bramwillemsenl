@@ -17,15 +17,14 @@ Picture element with lazy loading
 .a-picture img[data-src] {
   filter: blur(5px); /* Reduced from 20px to reduce flickering */
   opacity: 0.8;
-  transform: scale(1.03); /* Slight scale to avoid white edges during blur */
-  will-change: filter, opacity, transform; /* Optimize for animation */
+  will-change: filter, opacity; /* Optimize for animation */
 }
 
 .a-picture img.is-loaded {
   filter: blur(0);
   opacity: 1;
   transform: scale(1);
-  transition: 
+  transition:
     filter 0.4s ease-out,
     opacity 0.4s ease-out,
     transform 0.4s ease-out;
