@@ -15,8 +15,8 @@ const FLICKR_API_KEY = process.env.FLICKR_API_KEY;
 const FLICKR_API_SECRET = process.env.FLICKR_API_SECRET;
 // Use the atom format instead of RSS which is more reliable
 const FLICKR_FEED_URL = `https://www.flickr.com/services/feeds/photos_public.gne?id=${FLICKR_USER_ID}`;
-// Limit to 10 most recent photos by default
-const PHOTO_LIMIT = 10;
+// Limit to 200 most recent photos 
+const PHOTO_LIMIT = 200;
 const CONTENT_DIR = path.join(__dirname, '../content/photos');
 const ASSETS_DIR = path.join(__dirname, '../assets/images/photos');
 const FORCE_UPDATE = process.argv.includes('--force');
@@ -48,11 +48,78 @@ if (!fs.existsSync(ASSETS_DIR)) {
   console.log(`Created assets directory: ${ASSETS_DIR}`);
 }
 
-// Function to download an image from Flickr with retry logic
-async function downloadImage(imageUrl, photoId) {
-  // Get the highest resolution version (_b.jpg or _o.jpg)
-  const highResUrl = imageUrl.replace(/_m\.jpg$/, '_b.jpg');
+/**
+ * Function to get all available sizes for a Flickr photo using the Flickr API
+ * Uses flickr.photos.getSizes endpoint to fetch all available sizes
+ * @param {string} photoId - The Flickr photo ID
+ * @returns {Promise<Array>} - An array of available sizes with URLs
+ */
+async function getFlickrPhotoSizes(photoId) {
+  if (!FLICKR_API_KEY) {
+    throw new Error("Flickr API key not found. Please set FLICKR_API_KEY in your environment variables.");
+  }
 
+  try {
+    // Construct the Flickr API URL for getSizes
+    const apiUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=${FLICKR_API_KEY}&photo_id=${photoId}&format=json&nojsoncallback=1`;
+    
+    console.log(`Fetching available sizes for photo ID: ${photoId}`);
+    
+    // Add retry logic for API call
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      try {
+        // Add delay between retries
+        if (attempts > 0) {
+          const delay = Math.pow(2, attempts) * 1000;
+          console.log(`Waiting ${delay/1000} seconds before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        const response = await axios.get(apiUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 BramWillemseWebsite/1.0 (https://bramwillemse.nl)',
+            'Accept': 'application/json',
+            'Referer': 'https://bramwillemse.nl'
+          },
+          timeout: 10000
+        });
+        
+        // Check if the API response is valid
+        if (response.data && response.data.sizes && response.data.sizes.size) {
+          return response.data.sizes.size;
+        } else {
+          throw new Error(`Invalid API response: ${JSON.stringify(response.data)}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching photo sizes (attempt ${attempts + 1}/${maxAttempts}): ${error.message}`);
+        attempts++;
+        
+        if (attempts >= maxAttempts) {
+          throw error; // Re-throw after exhausting all attempts
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to fetch photo sizes from Flickr API: ${error.message}`);
+    return []; // Return empty array on failure
+  }
+}
+
+/**
+ * Function to download an image from Flickr with retry logic
+ * Downloads the best available size according to preference order:
+ * 1. Large 2048 (k suffix) - 2048px on longest side
+ * 2. Large 1024 (b suffix) - 1024px on longest side
+ * 3. Original (o suffix) - highest quality but largest file size
+ * 
+ * @param {string} imageUrl - The base image URL (typically thumbnail)
+ * @param {string} photoId - The Flickr photo ID
+ * @returns {Promise<Object>} - Result object with success status and path
+ */
+async function downloadImage(imageUrl, photoId) {
   // Extract filename from Flickr URL
   const filename = `flickr-${photoId}.jpg`;
   const outputPath = path.join(ASSETS_DIR, filename);
@@ -66,26 +133,136 @@ async function downloadImage(imageUrl, photoId) {
   // For sample mode, use placeholder images instead of actual downloads
   if (USE_SAMPLE_IMAGES) {
     console.log(`Using sample image for photo ID: ${photoId}`);
-
     try {
       // Use Flickr URL for sample
       console.log(`Using Flickr URL for sample instead of local image`);
-
-      // Return the Flickr URL - do not mark as sample to use the normal Flickr image
-      return { success: true, path: highResUrl, isSample: false };
+      // We'll return a URL that might not exist, but it doesn't matter in sample mode
+      return { success: true, path: imageUrl.replace(/_m\.jpg$/, '_k.jpg'), isSample: false };
     } catch (error) {
       console.error(`Error setting up sample image: ${error.message}`);
       return { success: false, error: error.message };
     }
   }
+  
+  try {
+    // Fetch available sizes from Flickr API
+    const availableSizes = await getFlickrPhotoSizes(photoId);
+    
+    if (!availableSizes || availableSizes.length === 0) {
+      console.warn(`No sizes found for photo ${photoId}, falling back to URL pattern method`);
+      // Fall back to URL pattern method if API fails
+      return await downloadImageByUrlPattern(imageUrl, photoId, outputPath);
+    }
+    
+    // Define our size preferences with labels and identifiers
+    const sizePreferences = [
+      { label: "Large 2048", identifier: "Large 2048", suffix: "_k" },
+      { label: "Large", identifier: "Large", suffix: "_b" },
+      { label: "Original", identifier: "Original", suffix: "_o" }
+    ];
+    
+    // Log available sizes for debugging
+    console.log(`Found ${availableSizes.length} available sizes for photo ${photoId}`);
+    
+    // Find the best size according to our preferences
+    let bestSizeUrl = null;
+    let bestSizeLabel = null;
+    
+    // First try to match by Flickr's label
+    for (const pref of sizePreferences) {
+      const matchedSize = availableSizes.find(s => s.label === pref.identifier);
+      if (matchedSize) {
+        bestSizeUrl = matchedSize.source;
+        bestSizeLabel = pref.label;
+        break;
+      }
+    }
+    
+    // If no match by label, try to match by URL suffix
+    if (!bestSizeUrl) {
+      for (const pref of sizePreferences) {
+        const matchedSize = availableSizes.find(s => s.source && s.source.includes(pref.suffix));
+        if (matchedSize) {
+          bestSizeUrl = matchedSize.source;
+          bestSizeLabel = pref.label;
+          break;
+        }
+      }
+    }
+    
+    // If we still don't have a match, use the largest available size
+    if (!bestSizeUrl && availableSizes.length > 0) {
+      // Sort by width*height to get the largest size
+      const sortedSizes = [...availableSizes].sort((a, b) => 
+        (b.width * b.height) - (a.width * a.height)
+      );
+      bestSizeUrl = sortedSizes[0].source;
+      bestSizeLabel = `Largest available (${sortedSizes[0].label})`;
+    }
+    
+    // If we have a URL to download, proceed
+    if (bestSizeUrl) {
+      console.log(`Selected best available size: ${bestSizeLabel} (${bestSizeUrl})`);
+      return await downloadImageWithRetry(bestSizeUrl, photoId, outputPath);
+    } else {
+      throw new Error("No suitable image size found");
+    }
+  } catch (error) {
+    console.error(`Error in size selection process: ${error.message}`);
+    
+    // Fall back to URL pattern method as a last resort
+    console.log("Falling back to URL pattern method...");
+    return await downloadImageByUrlPattern(imageUrl, photoId, outputPath);
+  }
+}
 
+/**
+ * Fallback method that tries to download image by constructing URLs with different size suffixes
+ * @param {string} imageUrl - The base image URL 
+ * @param {string} photoId - The Flickr photo ID
+ * @param {string} outputPath - Path where the image should be saved
+ * @returns {Promise<Object>} - Result object with success status and path
+ */
+async function downloadImageByUrlPattern(imageUrl, photoId, outputPath) {
+  // Start with the thumbnail URL and prepare our size variants to try
+  const baseUrl = imageUrl.replace(/_m\.jpg$/, '');
+  const sizeOptions = [
+    { url: `${baseUrl}_k.jpg`, label: "Large 2048" },
+    { url: `${baseUrl}_b.jpg`, label: "Large 1024" },
+    { url: `${baseUrl}_o.jpg`, label: "Original" }
+  ];
+  
+  // Try each size URL in order
+  for (let sizeIndex = 0; sizeIndex < sizeOptions.length; sizeIndex++) {
+    const currentOption = sizeOptions[sizeIndex];
+    console.log(`Trying ${currentOption.label} (${sizeIndex + 1}/${sizeOptions.length}): ${currentOption.url}`);
+    
+    const result = await downloadImageWithRetry(currentOption.url, photoId, outputPath);
+    if (result.success) {
+      return { ...result, usedUrl: currentOption.url };
+    }
+  }
+  
+  // If we get here, all URLs failed
+  console.error(`Failed to download image for photo ID ${photoId} after trying all size options`);
+  return { success: false, error: "All image size options failed" };
+}
+
+/**
+ * Helper function to download an image with retry logic
+ * @param {string} url - URL to download
+ * @param {string} photoId - Flickr photo ID (for logging)
+ * @param {string} outputPath - Path where the image should be saved
+ * @returns {Promise<Object>} - Result object with success status and path
+ */
+async function downloadImageWithRetry(url, photoId, outputPath) {
   // Add retry logic for downloading
   let attempts = 0;
   const maxAttempts = 3;
 
   while (attempts < maxAttempts) {
     try {
-      console.log(`Downloading image from ${highResUrl} (attempt ${attempts + 1}/${maxAttempts})`);
+      console.log(`Downloading image from ${url} (attempt ${attempts + 1}/${maxAttempts})`);
 
       // Add delay between retries
       if (attempts > 0) {
@@ -96,7 +273,7 @@ async function downloadImage(imageUrl, photoId) {
 
       // Download the image directly with arraybuffer response type
       const response = await axios({
-        url: highResUrl,
+        url: url,
         method: 'GET',
         responseType: 'arraybuffer', // Important: use arraybuffer for binary data
         headers: {
@@ -115,17 +292,27 @@ async function downloadImage(imageUrl, photoId) {
       // Write the binary data directly to file
       fs.writeFileSync(outputPath, Buffer.from(response.data));
 
+      console.log(`Successfully downloaded from ${url}`);
       console.log(`Saved image to: ${outputPath}`);
-      return { success: true, path: `images/photos/${filename}` };
+      
+      // Get file size for logging
+      const stats = fs.statSync(outputPath);
+      const fileSizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
+      console.log(`File size: ${fileSizeInMB} MB`);
+      
+      return { success: true, path: `images/photos/${path.basename(outputPath)}`, usedUrl: url };
     } catch (error) {
-      console.error(`Error downloading image (attempt ${attempts + 1}/${maxAttempts}): ${error.message}`);
+      console.error(`Error downloading image ${url} (attempt ${attempts + 1}/${maxAttempts}): ${error.message}`);
       attempts++;
-
+      
       if (attempts >= maxAttempts) {
+        console.log(`Failed to download ${url} after ${maxAttempts} attempts.`);
         return { success: false, error: error.message };
       }
     }
   }
+  
+  return { success: false, error: "Maximum retry attempts exceeded" };
 }
 
 // Create _index.md if it doesn't exist
@@ -327,8 +514,12 @@ async function createPhotoContent(photo) {
   const isLocalImage = localImagePath.startsWith('images/');
   const isSampleImage = downloadResult && downloadResult.isSample;
 
-  // Create a higher resolution URL by changing _m.jpg to _b.jpg for Flickr URLs
-  const highResImageUrl = imageUrl.replace(/_m\.jpg$/, '_b.jpg');
+  // Use the URL of the successfully downloaded image (from the API call or URL pattern)
+  // This ensures we reference exactly the same image URL in the markdown file
+  // If download failed, fall back to a reasonable default URL
+  const highResImageUrl = downloadResult && downloadResult.usedUrl ? 
+    downloadResult.usedUrl : 
+    imageUrl.replace(/_m\.jpg$/, '_k.jpg');
 
   // Create frontmatter
   const frontmatter = `---
