@@ -8,14 +8,21 @@ module.exports = {
   devtool: 'source-map', // Enable source maps
   devServer: {
     static: {
-      directory: path.resolve(__dirname, 'public'), // Changed to Hugo's public directory
-      publicPath: '/', // Changed to root
-      watch: true,
+      directory: path.resolve(__dirname, 'assets'), // Serve from assets not public
+      publicPath: '/',
     },
-    hot: true,
+    hot: false, // Disable HMR completely
+    liveReload: false, // Disable live reload completely
     devMiddleware: {
-      writeToDisk: true // Add this to write files to disk
-    }
+      writeToDisk: true, // Always write to disk
+      index: false, // Don't serve index.html
+    },
+    port: 8081,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    // Ensure WS isn't causing issues
+    webSocketServer: false
   },
   entry: {
     main: [
