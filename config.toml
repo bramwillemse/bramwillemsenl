@@ -15,4 +15,4 @@ enableInlineShortcodes = true
 unsafe = true
 
 # Add timeout settings to handle slow template rendering
-timeout = "60s"
+timeout = "120s" # Increase timeout for Netlify builds

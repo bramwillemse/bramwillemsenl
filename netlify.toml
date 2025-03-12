@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build:webpack && yarn build:hugo"
+  command = "yarn build:webpack && HUGO_RESOURCEDIR=resources hugo --environment production --gc --minify"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
