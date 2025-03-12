@@ -6,7 +6,8 @@
 *.hot-update.js
 .DS_Store
 .env
-.netlify
+.netlify/*
+!.netlify/git-lfs-settings
 node_modules
 
 # Hugo

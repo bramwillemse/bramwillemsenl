@@ -63,7 +63,7 @@ LIST (FEED)
 
         {{/* PHOTOS */}}
         {{ else if eq .Section "photos" }}
-          <article class="o-photo o-photo--compact e-list__item ">
+          <article class="o-photo o-photo--compact e-list__item e-list__photo">
             {{ $src := .Params.featured_image.src }}
             {{ $title := .Params.title }}
             {{ $classes := "o-photo__figure" }}

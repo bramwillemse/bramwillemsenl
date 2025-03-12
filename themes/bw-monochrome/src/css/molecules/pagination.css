@@ -1,5 +1,7 @@
 .m-pagination {
+  align-items: center;
   display: flex;
+  grid-column: 1 / -1;
   list-style: none;
   margin-bottom: 0;
 }

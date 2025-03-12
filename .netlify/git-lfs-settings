@@ -1,0 +1,6 @@
+{
+  "fetchPaths": ["**/*.jpg", "**/*.jpeg", "**/*.png", "**/*.gif", "**/*.webp"],
+  "lfsGitEnv": {
+    "GIT_LFS_SKIP_SMUDGE": "0"
+  }
+}
