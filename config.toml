@@ -15,5 +15,4 @@ enableInlineShortcodes = true
 unsafe = true
 
 # Add timeout settings to handle slow template rendering
-[timeout]
-render = 60000  # 60 seconds instead of default 30
+timeout = "60s"
