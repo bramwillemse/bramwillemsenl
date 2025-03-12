@@ -5,12 +5,13 @@ Picture element in a figure.
 */}}
 
 <figure class="a-figure {{ $.classes }}">
-  {{ with resources.Get .src }}
-    {{ $tiny := .Resize "20x" }}
-    {{ $small := .Resize "320x" }}
-    {{ $medium := .Resize "720x" }}
-    {{ $large := .Resize "1440x" }}
-    {{ $xlarge := .Resize "2160x" }}
+  {{ $image := resources.GetMatch .src }}
+  {{ if $image }}
+    {{ $tiny := $image.Resize "20x" }}
+    {{ $small := $image.Resize "320x" }}
+    {{ $medium := $image.Resize "720x" }}
+    {{ $large := $image.Resize "1440x" }}
+    {{ $xlarge := $image.Resize "2160x" }}
 
     <picture class="a-picture">
       <!-- Use data-srcset for LazyLoad library compatibility -->
@@ -33,6 +34,7 @@ Picture element in a figure.
       </figcaption>
     {{ end }}
   {{ else }}
-    {{ errorf "Image not found: %s" .src }}
+    <!-- Fallback when image not found: {{ .src }} -->
+    <div class="a-picture a-picture--missing">Image not available</div>
   {{ end }}
 </figure>
