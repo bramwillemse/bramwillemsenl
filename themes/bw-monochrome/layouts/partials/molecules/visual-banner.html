@@ -1,10 +1,11 @@
 {{ if .Params.featured_image }}
-  {{ with resources.Get .Params.featured_image.src }}
-    {{ $tiny := .Resize "20x" }}
-    {{ $small := .Resize "150x" }}
-    {{ $medium := .Resize "720x" }}
-    {{ $large := .Resize "1440x" }}
-    {{ $xlarge := .Resize "2160x" }}
+  {{ $image := resources.GetMatch .Params.featured_image.src }}
+  {{ if $image }}
+    {{ $tiny := $image.Resize "20x" }}
+    {{ $small := $image.Resize "150x" }}
+    {{ $medium := $image.Resize "720x" }}
+    {{ $large := $image.Resize "1440x" }}
+    {{ $xlarge := $image.Resize "2160x" }}
 
     <figure class="m-visual-banner">
       <picture class="a-picture">
@@ -24,7 +25,8 @@
       {{ end }}
     </figure>
   {{ else }}
-    {{ errorf "Featured image not found: %s" $.Params.featured_image.src }}
+    <!-- Fallback when image not found -->
+    <figure class="m-visual-banner m-visual-banner--is-empty"></figure>
   {{ end }}
 {{ else }}
   <figure class="m-visual-banner m-visual-banner--is-empty"></figure>
