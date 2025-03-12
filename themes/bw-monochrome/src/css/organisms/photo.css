@@ -4,6 +4,18 @@ PHOTO
 Styling for photo items in photo lists and grids
 */
 
+.o-photo {
+  display: grid;
+  grid-column: 1/-1;
+  max-width: 56ch;
+}
+
+@media (--br-m) {
+  .o-photo {
+    grid-column: 2 / 6 ;
+    max-width: 100%;
+  }
+}
 
 /* Compact photo for feed */
 /* .o-photo--compact {} */

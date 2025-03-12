@@ -12,8 +12,11 @@ A blog post or content page
 
 .o-article--compact {
   align-items: flex-start;
-  border-left: solid .3rem var(--black);
   margin-bottom: var(--xxl);
+}
+
+.o-article--compact > * {
+  grid-column: 1 / -1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,7 +43,13 @@ A blog post or content page
   .o-article__block,
   .o-article--compact {
     display: block;
-    justify-self: center;
     max-width: 56ch;
+  }
+}
+
+@media (--br-m) {
+  .o-article__block,
+  .o-article--compact {
+    justify-self: center;
   }
 }

@@ -23,16 +23,6 @@ Layout for lists of content items. Subgrid of global grid.
   z-index: 0;
 }
 
-/* .e-list--timeline::after {
-  background-color: var(--grey-90);
-  bottom: var(--xxl);
-  content: "";
-  height: 2px;
-  left: 2rem;
-  position: absolute;
-  width: 2rem;
-} */
-
 .e-list__header {
   grid-column: 1 / -1;
   margin-bottom: var(--l);
@@ -91,11 +81,30 @@ Layout for lists of content items. Subgrid of global grid.
 
 .e-list__item-content,
 .e-list__item-info {
-  align-items: flex-end;
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
   grid-column: 1 / -1;
   justify-content: center;
+}
+
+.e-list--timeline .o-article--compact {
+  border-left: solid .3rem var(--black);
+  border-top: none;
+  margin-left: .4rem;
+}
+
+.e-list--timeline .o-article--compact.e-list__item::before {
+  left: -.666rem;
+}
+
+.e-list--timeline .o-photo--compact {
+  grid-column: 1 / -1;
+}
+
+/* Prevent portrait photos to become too big for a small screen */
+.o-photo__figure.e-list__item-content {
+  max-width: 56ch;
 }
 
 @media (--br-s) {
@@ -136,11 +145,27 @@ Layout for lists of content items. Subgrid of global grid.
     padding-left: 0;
   }
 
+  .e-list--timeline .o-article--compact {
+    border-left: none;
+    border-top: solid .3rem var(--black);
+    margin-left: 0;
+    padding-left: var(--xl);
+  }
+
   .e-list--timeline .e-list__item::before {
     left: 50%;
     margin-left: -.5rem;
     top: 50%;
   }
+
+  .e-list--timeline .o-article--compact.e-list__item::before {
+    left:50%;
+    margin-left: 0;
+    transform: translateX(-50%);
+    top: -.6rem;
+  }
+
+
 
   .e-list__item-content {
     grid-column: 4 / 7;
@@ -149,6 +174,7 @@ Layout for lists of content items. Subgrid of global grid.
   }
 
   .e-list__item-info {
+    align-items: flex-end;
     grid-column: 1 / 4;
     grid-row: 1 / 2;
     text-align: right;
