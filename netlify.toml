@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build:webpack && HUGO_RESOURCEDIR=resources hugo --environment production --gc --minify"
+  command = "yarn build:webpack && HUGO_TIMEOUT=120s HUGO_RESOURCEDIR=resources hugo --environment production --gc --minify"
 [build.environment]
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"

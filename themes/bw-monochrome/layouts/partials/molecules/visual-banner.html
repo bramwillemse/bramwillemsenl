@@ -1,5 +1,10 @@
 {{ if .Params.featured_image }}
-  {{ $image := resources.GetMatch .Params.featured_image.src }}
+  {{ $src := .Params.featured_image.src }}
+  {{ if not (hasPrefix $src "/") }}
+    {{ $src = print "/" $src }}
+  {{ end }}
+  
+  {{ $image := resources.GetMatch (strings.TrimPrefix "/" $src) }}
   {{ if $image }}
     {{ $tiny := $image.Resize "20x" }}
     {{ $small := $image.Resize "150x" }}
