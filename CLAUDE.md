@@ -4,6 +4,13 @@
 - `yarn dev` - Run development servers (Hugo + Webpack)
 - `yarn build` - Create production build
 
+## Testing Commands
+- `yarn test` - Run all Playwright tests
+- `yarn test:ui` - Run tests with UI mode for debugging
+- `yarn test:headed` - Run tests in headed mode (shows browser)
+- `yarn test:debug` - Run tests in debug mode
+- `yarn test:visual-update` - Update visual snapshots
+
 ## Tech Stack
 - Hugo (static site generator)
 - Webpack 5 (asset bundling)
