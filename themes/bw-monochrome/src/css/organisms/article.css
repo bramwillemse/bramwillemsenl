@@ -47,8 +47,13 @@ A blog post or content page
   }
 }
 
+@media (--br-s) {
+  .o-article__block {
+    justify-self: center;
+  }
+}
+
 @media (--br-m) {
-  .o-article__block,
   .o-article--compact {
     justify-self: center;
   }

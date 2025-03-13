@@ -5,22 +5,24 @@ Site logo, showing Bram's happy face.
 */}}
 
 {{ with resources.Get "images/bram-willemse.jpg" }}
+    {{ $tiny := .Resize "20x" }}
     {{ $small := .Resize "150x" }}
     {{ $medium := .Resize "350x" }}
     {{ $large := .Resize "640x" }}
 
     <a class="a-logo u-disable-link u-is-clickable" href="/" title="Navigate to the homepage">
-        <span class="a-logo__label" aria-hidden="true">⬅ Bram</span>
-        <picture class="a-logo__picture">
+        <span class="a-logo__label" aria-hidden="true">← Bram</span>
+        <picture class="a-picture a-logo__picture">
+            <!-- For logo, just use standard srcset since it's above the fold -->
             <source srcset="{{ $large.RelPermalink }}" media="(min-width: 1200px)">
             <source srcset="{{ $medium.RelPermalink }}" media="(min-width: 700px)">
             <img
                 class="a-logo__image"
                 src="{{ $small.RelPermalink }}"
                 alt=""
-                width="762"
-                height="762"
-                loading="lazy">
+                width="{{ .Width }}"
+                height="{{ .Height }}"
+                loading="eager">
         </picture>
     </a>
 {{ else }}
