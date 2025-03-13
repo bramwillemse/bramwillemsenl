@@ -24,3 +24,10 @@ tmp/*
 .pnp.*
 .aider*
 themes/bw-monochrome/assets/*
+
+# Playwright
+playwright-report/
+test-results/
+/test-results/
+/playwright-report/
+/playwright/.cache/
