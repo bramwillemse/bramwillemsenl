@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:42.217Z"
 featured_image:
   src: "images/photos/flickr-54300855762.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54300855762.jpg" title="Untitled Photo" >}}

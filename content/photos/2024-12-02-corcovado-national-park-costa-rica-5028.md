@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:10.558Z"
 featured_image:
   src: "images/photos/flickr-54301985028.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54301985028.jpg" title="Corcovado National Park, Costa Rica" >}}

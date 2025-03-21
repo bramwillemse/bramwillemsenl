@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:17.962Z"
 featured_image:
   src: "images/photos/flickr-54300858777.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54300858777.jpg" title="Cedrela Lodge view, Dota, Costa Rica" >}}

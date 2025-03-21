@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:15.600Z"
 featured_image:
   src: "images/photos/flickr-54300859277.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54300859277.jpg" title="Boat beaked Heron, Corcovado National Park, Costa Rica" >}}

@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:22.982Z"
 featured_image:
   src: "images/photos/flickr-54301983318.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54301983318.jpg" title="Heron in a river, Costa Rica" >}}

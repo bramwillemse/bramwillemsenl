@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:12:57.581Z"
 featured_image:
   src: "images/photos/flickr-54301601146.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54301601146.jpg" title="Reichswald near Kleve, Germany" >}}

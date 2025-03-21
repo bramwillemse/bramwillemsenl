@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:13:00.495Z"
 featured_image:
   src: "images/photos/flickr-54300730997.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54300730997.jpg" title="Corcovado Crocodile, Corcovado National Park, Costa Rica" >}}

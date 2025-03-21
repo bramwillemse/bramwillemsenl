@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:11:58.377Z"
 featured_image:
   src: "images/photos/flickr-54301981464.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54301981464.jpg" title="Porsche Panamera E-Hybrid vs Hyundai Ionic 5 N" >}}

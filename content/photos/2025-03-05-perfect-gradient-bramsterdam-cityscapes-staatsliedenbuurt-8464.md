@@ -13,6 +13,10 @@ flickr:
   date_published: "2025-03-12T14:11:48.700Z"
 featured_image:
   src: "images/photos/flickr-54368968464.jpg"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 ---
 
 {{< figure src="/images/photos/flickr-54368968464.jpg" title="Perfect gradient #bramsterdam #cityscapes #staatsliedenbuurt" >}}
