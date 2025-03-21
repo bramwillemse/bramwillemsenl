@@ -6,5 +6,13 @@ Styling for drawing
 
 .o-drawing {
   display: grid;
-  grid-template-columns: subgrid;
+  grid-column: 1/-1;
+  max-width: 56ch;
+}
+
+@media (--br-m) {
+  .o-drawing {
+    grid-column: 2 / 6 ;
+    max-width: 100%;
+  }
 }
