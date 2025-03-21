@@ -12,8 +12,8 @@ featured_image:
   src: /images/developers-are-dead/developers-are-dead.jpg
   alt: "Photorealistic scene of an abandoned office with a skeleton slumped over a keyboard, while a glowing AI robot stands in the background overseeing empty workstations — a symbolic depiction of the end of human developers and the rise of AI."
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 draft: false
 ---

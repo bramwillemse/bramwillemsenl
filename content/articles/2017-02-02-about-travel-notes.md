@@ -17,8 +17,8 @@ title: About Travel Notes
 title_short: Travel Notes
 type: articles
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 url: /about-travel-notes/
 ---

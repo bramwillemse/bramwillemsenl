@@ -12,8 +12,8 @@ title: "Travel Notes: the concept"
 title_short: "The concept"
 type: articles
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 url: /travel-notes-concept/
 ---

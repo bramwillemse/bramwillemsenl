@@ -10,8 +10,8 @@ introduction:
   illum rerum aut soluta.
 summary: This is a summary of an article. Very interesting indeed.
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
 title: Article One
 title_short: One
 type: articles

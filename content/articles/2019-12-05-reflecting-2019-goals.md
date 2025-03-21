@@ -10,8 +10,8 @@ reading_time: 8 minutes
 date: 2019-12-05T12:59:35+01:00
 type: "Articles"
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 type: articles
 url: /reflecting-2019-goals/

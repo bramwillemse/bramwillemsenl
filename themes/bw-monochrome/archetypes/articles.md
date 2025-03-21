@@ -11,8 +11,8 @@ reading_time: ""
 featured_image:
   src: images/crisis/bram-willemse-corona-crisis.jpeg
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 draft: false
 ---

@@ -8,8 +8,8 @@ author: "Bram Willemse"
 date: 2019-12-05T12:58:35+01:00
 url: "note-on-meditation"
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 type: articles
 ---

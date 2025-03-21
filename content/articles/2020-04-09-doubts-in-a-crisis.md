@@ -9,8 +9,8 @@ reading_time: 5 minutes
 date: 2020-04-09T08:54:51+02:00
 url: /crisis-doubts/
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 ---
 

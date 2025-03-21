@@ -9,8 +9,8 @@ author: "Bram Willemse"
 type: "articles"
 url: "2021-themes-goals"
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 featured_image:
   src: "images/2021-themes-goals/bram_willemse-amsterdam_ij-bramsterdam.jpeg"

@@ -8,8 +8,8 @@ type: "notes"
 url: ""
 description: ""
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 draft: false
 ---

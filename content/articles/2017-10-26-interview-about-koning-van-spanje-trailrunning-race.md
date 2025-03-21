@@ -12,8 +12,8 @@ title: Interview about Koning van Spanje trailrunning race
 title_short: "Interview about trailrunning"
 type: articles
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 url: /interview-about-koning-van-spanje-trailrunning-race/
 ---

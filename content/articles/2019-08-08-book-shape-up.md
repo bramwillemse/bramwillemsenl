@@ -9,8 +9,8 @@ description:
 url: /book-basecamp-shape-up/
 author: Bram
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 categories:
   - Books

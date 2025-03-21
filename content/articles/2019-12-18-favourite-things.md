@@ -10,8 +10,8 @@ featured_image:
 reading_time: 4 minutes
 type: "Articles"
 parent:
-  title: "Articles"
-  url: "/articles"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 type: articles
 url: /2019-favourite-things/

@@ -9,8 +9,8 @@ date: 2020-04-06T21:53:02+02:00
 url: "drawings/the-wolf-weekly-8"
 type: "drawings"
 parent:
-  title: "Drawings"
-  url: "/drawings"
+  title: "Feed"
+  url: "/feed"
   icon: "list"
 ---
 
