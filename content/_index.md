@@ -1,7 +1,7 @@
 ---
 type: page
-title: Bram Willemse - Interim product professional
-description: Bram Willemse is an interim product professional with a background in digital product development, based in Amsterdam, the Netherlands.
+title: Bram Willemse - Product professional
+description: Bram Willemse is a product professional with a background in digital product development, based in Amsterdam, the Netherlands.
 ---
 
 <header class="e-homepage__header">
