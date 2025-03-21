@@ -169,8 +169,8 @@ Layout for lists of content items. Subgrid of global grid.
   .e-list--timeline .o-article--compact.e-list__item::before {
     left:50%;
     margin-left: 0;
-    transform: translateX(-50%);
     top: -.6rem;
+    transform: translateX(-50%);
   }
 
   .e-list__item-content {
