@@ -1,4 +1,8 @@
-
+/**
+ * SKIP LINKS
+ * ----------
+ * Accessibility menu to skip to essential content / features
+ */
 .m-skip-links {
   background-color: var(--grey-90);
   box-shadow: var(--shadow-default);
@@ -10,8 +14,16 @@
   right: 0;
   top: 0;
   transform: translateY(calc(-100% - var(--spacing-l)));
+  
+  /* Initial state without animation */
+  animation: skipLinkInit 0.01s;
+  animation-fill-mode: backwards;
+  animation-delay: -0.01s; /* Negative delay forces immediate application */
+  
+  /* Regular transitions for future interactions */
   transition: .3s var(--ease-in-out-quad);
   transition-property: transform, box-shadow;
+  
   width: 100%;
   z-index: var(--z-modal);
 }
@@ -49,4 +61,9 @@
 .m-skip-links__link:not(.a-button):focus::after,
 .m-skip-links__link:not(.a-button):hover::after {
   background-color: var(--white);
+}
+
+/* Empty animation that does nothing but exists to apply animation-fill-mode */
+@keyframes skipLinkInit {
+  from, to { transform: translateY(calc(-100% - var(--spacing-l))); }
 }

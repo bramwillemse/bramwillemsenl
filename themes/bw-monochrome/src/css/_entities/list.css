@@ -56,6 +56,13 @@ Layout for lists of content items. Subgrid of global grid.
   z-index: 2;
 }
 
+@media (prefers-color-scheme: dark) {
+  .e-list--timeline .e-list__header::before {
+    background-color: var(--black);
+  }
+}
+
+
 .e-list__item {
   display: grid;
   grid-column: 1 / -1;
@@ -78,6 +85,7 @@ Layout for lists of content items. Subgrid of global grid.
   width: 1rem;
   z-index: 1;
 }
+
 
 .e-list__item-content,
 .e-list__item-info {
@@ -165,8 +173,6 @@ Layout for lists of content items. Subgrid of global grid.
     top: -.6rem;
   }
 
-
-
   .e-list__item-content {
     grid-column: 4 / 7;
     grid-row: 1 / 2;
@@ -190,4 +196,11 @@ Layout for lists of content items. Subgrid of global grid.
     text-align: left;
   }
 }
+
+@media (--br-m) and (prefers-color-scheme: dark) {
+  .e-list--timeline .e-list__header {
+    background-color: var(--black);
+  }
+}
+
 
