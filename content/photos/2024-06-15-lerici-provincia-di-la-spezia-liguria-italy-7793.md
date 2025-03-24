@@ -14,7 +14,7 @@ flickr:
   photo_id: "54301857793"
   image_url: "https://live.staticflickr.com/65535/54301857793_b1be42f0f1_k.jpg"
   date_taken: "2024-06-15T11:08:13.000Z"
-  date_published: "2025-03-24T09:45:14.156Z"
+  date_published: "2025-03-24T09:58:46.649Z"
 location: "Lerici, Provincia di La Spezia, Liguria, Italy"
 featured_image:
   src: "images/photos/flickr-54301857793.jpg"

@@ -14,7 +14,7 @@ flickr:
   photo_id: "54301845524"
   image_url: "https://live.staticflickr.com/65535/54301845524_1df48f641e_k.jpg"
   date_taken: "2024-10-11T08:03:29.000Z"
-  date_published: "2025-03-24T09:45:14.643Z"
+  date_published: "2025-03-24T09:58:47.174Z"
 location: "Stadtkreis Stuttgart, Regierungsbezirk Stuttgart, Baden-Württemberg, Germany"
 featured_image:
   src: "images/photos/flickr-54301845524.jpg"

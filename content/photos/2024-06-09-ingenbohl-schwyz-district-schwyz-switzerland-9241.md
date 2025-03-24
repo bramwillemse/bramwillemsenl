@@ -14,7 +14,7 @@ flickr:
   photo_id: "54301739241"
   image_url: "https://live.staticflickr.com/65535/54301739241_dcd52e1608_k.jpg"
   date_taken: "2024-06-09T13:19:19.000Z"
-  date_published: "2025-03-24T09:44:10.965Z"
+  date_published: "2025-03-24T09:57:45.436Z"
 location: "Ingenbohl, Schwyz District, Schwyz, Switzerland"
 featured_image:
   src: "images/photos/flickr-54301739241.jpg"

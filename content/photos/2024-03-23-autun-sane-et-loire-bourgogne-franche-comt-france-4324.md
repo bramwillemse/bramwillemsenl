@@ -14,7 +14,7 @@ flickr:
   photo_id: "54301974324"
   image_url: "https://live.staticflickr.com/65535/54301974324_fe6c34eedb_k.jpg"
   date_taken: "2024-03-23T08:48:17.000Z"
-  date_published: "2025-03-24T09:44:17.829Z"
+  date_published: "2025-03-24T09:57:51.821Z"
 location: "Autun, Saône-et-Loire, Bourgogne-Franche-Comté, France"
 featured_image:
   src: "images/photos/flickr-54301974324.jpg"

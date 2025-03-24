@@ -14,7 +14,7 @@ flickr:
   photo_id: "54300855762"
   image_url: "https://live.staticflickr.com/65535/54300855762_1dd4ba8963_k.jpg"
   date_taken: "2024-12-05T14:34:41.000Z"
-  date_published: "2025-03-24T09:45:01.082Z"
+  date_published: "2025-03-24T09:58:34.665Z"
 location: "Bahía Ballena, Osa, Provincia de Puntarenas, Costa Rica"
 featured_image:
   src: "images/photos/flickr-54300855762.jpg"

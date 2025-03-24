@@ -14,7 +14,7 @@ flickr:
   photo_id: "54301856903"
   image_url: "https://live.staticflickr.com/65535/54301856903_5407e174ae_k.jpg"
   date_taken: "2024-11-26T16:05:38.000Z"
-  date_published: "2025-03-24T09:45:22.589Z"
+  date_published: "2025-03-24T09:58:55.116Z"
 location: "Cahuita, Talamanca, Provincia de Limón, Costa Rica"
 featured_image:
   src: "images/photos/flickr-54301856903.jpg"

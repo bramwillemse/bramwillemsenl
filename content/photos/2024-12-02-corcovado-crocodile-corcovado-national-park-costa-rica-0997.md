@@ -14,7 +14,7 @@ flickr:
   photo_id: "54300730997"
   image_url: "https://live.staticflickr.com/65535/54300730997_40c1a46e5f_k.jpg"
   date_taken: "2024-12-02T13:26:47.000Z"
-  date_published: "2025-03-24T09:45:23.019Z"
+  date_published: "2025-03-24T09:58:55.587Z"
 location: "Puerto Jiménez, Golfito, Provincia de Puntarenas, Costa Rica"
 featured_image:
   src: "images/photos/flickr-54300730997.jpg"
