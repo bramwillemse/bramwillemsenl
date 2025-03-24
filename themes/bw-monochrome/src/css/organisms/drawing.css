@@ -10,9 +10,19 @@ Styling for drawing
   max-width: 56ch;
 }
 
+/* Drawing in list/feed context */
+.e-list__item.o-drawing {
+  grid-template-columns: subgrid;
+}
+
 @media (--br-m) {
   .o-drawing {
     grid-column: 2 / 6 ;
     max-width: 100%;
+  }
+  
+  /* Drawing in list/feed context keeps the list layout */
+  .e-list__item.o-drawing {
+    grid-column: 1 / -1;
   }
 }
