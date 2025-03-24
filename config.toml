@@ -8,7 +8,7 @@ pagerSize = 16
 path = "page"
 
 # RSS, categories and tags disabled for an easy start
-disableKinds = ["RSS", "taxonomy", "term"]
+disableKinds = ["taxonomy", "term"]
 enableInlineShortcodes = true
 
 [markup.goldmark.renderer]

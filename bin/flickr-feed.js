@@ -15,14 +15,25 @@ const FLICKR_API_KEY = process.env.FLICKR_API_KEY;
 const FLICKR_API_SECRET = process.env.FLICKR_API_SECRET;
 // Use the Flickr API instead of RSS feed to get more photos
 const FLICKR_FEED_URL = `https://www.flickr.com/services/feeds/photos_public.gne?id=${FLICKR_USER_ID}`; // Fallback
-const FLICKR_API_URL = `https://www.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=${FLICKR_API_KEY}&user_id=${FLICKR_USER_ID}&extras=date_taken,description,tags,url_m&per_page=100&format=json&nojsoncallback=1`;
+const FLICKR_API_URL = `https://www.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=${FLICKR_API_KEY}&user_id=${FLICKR_USER_ID}&extras=date_taken,description,tags,url_m,geo,place_id&per_page=100&format=json&nojsoncallback=1`;
 // Limit to 200 most recent photos 
 const PHOTO_LIMIT = 200;
+// Tags to exclude from import
+const EXCLUDED_TAGS = ['opzich'];
 const CONTENT_DIR = path.join(__dirname, '../content/photos');
 const ASSETS_DIR = path.join(__dirname, '../assets/images/photos');
 const FORCE_UPDATE = process.argv.includes('--force');
 const USE_SAMPLE = process.argv.includes('--sample');
 const USE_SAMPLE_IMAGES = process.argv.includes('--sample-images');
+
+// Check if a specific photo ID was provided as an argument
+// Format: node script.js [--force] [--photo PHOTO_ID]
+let SPECIFIC_PHOTO_ID = null;
+const photoArgIndex = process.argv.indexOf('--photo');
+if (photoArgIndex !== -1 && process.argv.length > photoArgIndex + 1) {
+  SPECIFIC_PHOTO_ID = process.argv[photoArgIndex + 1];
+  console.log(`Processing only specific photo ID: ${SPECIFIC_PHOTO_ID}`);
+}
 
 // Path to sample data file (for testing)
 const SAMPLE_FILE_PATH = path.join(__dirname, 'flickr-sample.xml');
@@ -37,6 +48,26 @@ const api = axios.create({
   timeout: 10000
 });
 
+/**
+ * Flickr Photo Import Script Usage:
+ * 
+ * This script downloads photos from Flickr and creates content files for Hugo.
+ * 
+ * Basic usage:
+ * node bin/flickr-feed.js
+ * 
+ * Options:
+ * --force         Force update of existing photos
+ * --photo <id>    Process a single photo by ID
+ * --sample        Use sample data instead of real API calls
+ * --sample-images Use sample images instead of downloading real images
+ * 
+ * Examples:
+ * node bin/flickr-feed.js --force                  # Force update all photos
+ * node bin/flickr-feed.js --photo 54301982653      # Process a single photo
+ * node bin/flickr-feed.js --force --photo 54301982653  # Force update a single photo
+ */
+
 // Ensure photos content directory exists
 if (!fs.existsSync(CONTENT_DIR)) {
   fs.mkdirSync(CONTENT_DIR, { recursive: true });
@@ -47,6 +78,82 @@ if (!fs.existsSync(CONTENT_DIR)) {
 if (!fs.existsSync(ASSETS_DIR)) {
   fs.mkdirSync(ASSETS_DIR, { recursive: true });
   console.log(`Created assets directory: ${ASSETS_DIR}`);
+}
+
+/**
+ * Function to get location information for a Flickr photo
+ * Uses flickr.photos.geo.getLocation endpoint to fetch location data
+ * @param {string} photoId - The Flickr photo ID
+ * @returns {Promise<string|null>} - Formatted location string or null if no location
+ */
+async function getFlickrPhotoLocation(photoId) {
+  if (!FLICKR_API_KEY) {
+    throw new Error("Flickr API key not found. Please set FLICKR_API_KEY in your environment variables.");
+  }
+
+  try {
+    // Construct the Flickr API URL for geo.getLocation
+    const apiUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key=${FLICKR_API_KEY}&photo_id=${photoId}&format=json&nojsoncallback=1`;
+    
+    console.log(`Fetching location for photo ID: ${photoId}`);
+    
+    // Add retry logic for API call
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      try {
+        // Add delay between retries
+        if (attempts > 0) {
+          const delay = Math.pow(2, attempts) * 1000;
+          console.log(`Waiting ${delay/1000} seconds before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        const response = await axios.get(apiUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 BramWillemseWebsite/1.0 (https://bramwillemse.nl)',
+            'Accept': 'application/json',
+            'Referer': 'https://bramwillemse.nl'
+          },
+          timeout: 10000
+        });
+        
+        // Check if the API response is valid and contains location data
+        if (response.data && response.data.photo && response.data.photo.location) {
+          const loc = response.data.photo.location;
+          
+          // Build location string from available components
+          let locationParts = [];
+          
+          if (loc.locality && loc.locality._content) locationParts.push(loc.locality._content);
+          if (loc.county && loc.county._content) locationParts.push(loc.county._content);
+          if (loc.region && loc.region._content) locationParts.push(loc.region._content);
+          if (loc.country && loc.country._content) locationParts.push(loc.country._content);
+          
+          return locationParts.length > 0 ? locationParts.join(', ') : null;
+        } else {
+          // If no location data is available
+          return null;
+        }
+      } catch (error) {
+        // If we get "Photo has no location information" error, just return null
+        if (error.response && error.response.data && error.response.data.code === 2) {
+          return null;
+        }
+        
+        console.error(`Error fetching location (attempt ${attempts + 1}/${maxAttempts}): ${error.message}`);
+        attempts++;
+        
+        if (attempts >= maxAttempts) {
+          return null; // Return null after exhausting all attempts
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to fetch location from Flickr API: ${error.message}`);
+    return null;
+  }
 }
 
 /**
@@ -377,6 +484,46 @@ function slugify(title) {
 }
 
 /**
+ * Helper function to safely extract string content
+ * @param {any} content - The content to extract string from
+ * @returns {string} - The extracted string or empty string if not possible
+ */
+function safeString(content) {
+  if (!content) return '';
+  
+  if (typeof content === 'string') {
+    return content;
+  }
+  
+  if (content._content) {
+    return typeof content._content === 'string' ? content._content : '';
+  }
+  
+  return '';
+}
+
+/**
+ * Helper function to clean HTML from a string
+ * @param {string} html - The HTML string to clean
+ * @returns {string} - The cleaned string
+ */
+function cleanHtml(html) {
+  if (!html || typeof html !== 'string') return '';
+  
+  try {
+    return html
+      .replace(/<p><a href="[^"]*">.*?<\/a> posted a photo:<\/p>/g, '')
+      .replace(/<p><a href="[^"]*">.*?<\/a><\/p>/g, '')
+      .replace(/<[^>]*>/g, '') // Remove all remaining HTML tags
+      .replace(/\s+/g, ' ')    // Normalize whitespace
+      .trim();                 // Trim whitespace
+  } catch (e) {
+    console.warn(`Error cleaning HTML: ${e.message}`);
+    return '';
+  }
+}
+
+/**
  * Create a Hugo content file for a photo
  * Handles data from both the Flickr API and RSS/Atom feed formats
  * @param {Object} photo - Photo data from Flickr API or RSS/Atom feed
@@ -384,12 +531,32 @@ function slugify(title) {
  */
 async function createPhotoContent(photo) {
   // Extract data from the photo (handling both API and RSS/Atom formats)
-  let title, link, pubDate, takenDate, description, imageUrl, author, categories, photoId;
+  let title, link, pubDate, takenDate, imageUrl, author, categories = [], photoId;
+  let description = '';
+  let location = '';
 
   // Check if it's Flickr API format (has id field directly)
   if (photo.id) {
     photoId = photo.id;
+    
+    // Get tags (comma-separated string in API response)
+    let photoTags = [];
+    if (photo.tags) {
+      photoTags = photo.tags.split(' ').filter(tag => tag.trim() !== '');
+      
+      // Check if photo has any excluded tags
+      if (photoTags.some(tag => EXCLUDED_TAGS.includes(tag))) {
+        console.log(`Skipping photo ${photo.id} because it has excluded tag: ${photoTags.filter(tag => EXCLUDED_TAGS.includes(tag))}`);
+        return null;
+      }
+    }
+    
+    // Get photo title
     title = photo.title || 'Untitled Photo';
+    
+    // Fetch location data for photos with geo information
+    // This will be populated later when we get location information
+    location = '';
     
     // Construct photo page URL from photo ID and owner
     link = `https://www.flickr.com/photos/${FLICKR_USER_ID}/${photoId}`;
@@ -418,30 +585,33 @@ async function createPhotoContent(photo) {
       imageUrl = `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg`;
     }
     
-    // Get description and author
-    description = photo.description ? photo.description._content || photo.description : '';
-    author = 'Bram Willemse'; // Default author
-    
-    // Get tags (comma-separated string in API response)
-    if (photo.tags) {
-      categories = photo.tags.split(' ').filter(tag => tag.trim() !== '');
-    } else {
-      categories = [];
+    // Get description
+    if (photo.description) {
+      description = safeString(photo.description);
     }
+    
+    author = 'Bram Willemse'; // Default author
+    categories = photoTags;
   }
   // Check if it's RSS format
   else if (photo.title && photo.link && photo.pubDate) {
     title = photo.title[0];
     link = photo.link[0];
     pubDate = new Date(photo.pubDate[0]);
-    description = photo.description ? photo.description[0] : '';
+    
+    if (photo.description && photo.description[0]) {
+      description = photo.description[0];
+    }
 
     // Extract photo ID from the link
     const idMatch = link.match(/\/photos\/[^\/]+\/(\d+)/);
     photoId = idMatch ? idMatch[1] : null;
 
     // Extract image URL from description
-    const imgMatch = description.match(/<img src="([^"]+)"[^>]*>/);
+    let imgMatch = null;
+    if (typeof description === 'string') {
+      imgMatch = description.match(/<img src="([^"]+)"[^>]*>/);
+    }
     imageUrl = imgMatch ? imgMatch[1] : '';
 
     // Find author name
@@ -449,13 +619,32 @@ async function createPhotoContent(photo) {
 
     // Extract tags
     categories = photo.category || [];
+    
+    // Check if photo has any excluded tags
+    if (Array.isArray(categories)) {
+      let tags = [];
+      
+      // Convert categories to tags based on format
+      if (categories[0] && categories[0].$ && categories[0].$.term) {
+        tags = categories.map(cat => cat.$.term).filter(tag => tag.trim() !== '');
+      } else if (typeof categories[0] === 'string') {
+        tags = categories.filter(tag => tag.trim() !== '');
+      } else if (categories[0] && (categories[0]._ || categories[0].term)) {
+        tags = categories.map(cat => cat._ || cat.term || '').filter(tag => tag && tag.trim() !== '');
+      }
+      
+      if (tags.some(tag => EXCLUDED_TAGS.includes(tag))) {
+        console.log(`Skipping photo ${photoId} because it has excluded tag: ${tags.filter(tag => EXCLUDED_TAGS.includes(tag))}`);
+        return null;
+      }
+    }
 
     // Try to extract date taken from description or other fields
     // If not available, use publication date
     takenDate = pubDate;
-
+    
     // Look for dateTaken in description (sometimes embedded in HTML)
-    if (description) {
+    if (typeof description === 'string') {
       const dateMatch = description.match(/taken on ([^<]+)/i);
       if (dateMatch && dateMatch[1]) {
         try {
@@ -470,36 +659,63 @@ async function createPhotoContent(photo) {
   // Check if it's Atom format
   else if (photo.title && photo.link && photo.published) {
     title = photo.title[0]._ || photo.title[0];
-
+    
     // Find the link to the photo page
     const links = photo.link || [];
-    const photoLink = links.find(l => l.$.rel === 'alternate');
-    link = photoLink ? photoLink.$.href : '';
-
+    const photoLink = links.find(l => l.$ && l.$.rel === 'alternate');
+    link = photoLink && photoLink.$ ? photoLink.$.href : '';
+    
     // Extract photo ID from the link
     const idMatch = link.match(/\/photos\/[^\/]+\/(\d+)/);
     photoId = idMatch ? idMatch[1] : null;
-
+    
     pubDate = new Date(photo.published[0]);
-
+    
     // Find content with the image
-    const content = photo.content ? photo.content[0]._ : '';
-
+    let content = '';
+    if (photo.content && photo.content[0] && photo.content[0]._) {
+      content = photo.content[0]._;
+      description = content;
+    }
+    
     // Extract image URL from content
-    const imgMatch = content ? content.match(/<img src="([^"]+)"[^>]*>/) : null;
+    let imgMatch = null;
+    if (typeof content === 'string') {
+      imgMatch = content.match(/<img src="([^"]+)"[^>]*>/);
+    }
     imageUrl = imgMatch ? imgMatch[1] : '';
 
     // Find author name
-    author = photo.author && photo.author[0].name ? photo.author[0].name[0] : 'Bram Willemse';
+    author = photo.author && photo.author[0] && photo.author[0].name ? 
+      photo.author[0].name[0] : 'Bram Willemse';
 
     // Extract tags/categories
     categories = photo.category || [];
+    
+    // Check if photo has any excluded tags
+    if (Array.isArray(categories)) {
+      let tags = [];
+      
+      // Convert categories to tags based on format
+      if (categories[0] && categories[0].$ && categories[0].$.term) {
+        tags = categories.map(cat => cat.$.term).filter(tag => tag.trim() !== '');
+      } else if (typeof categories[0] === 'string') {
+        tags = categories.filter(tag => tag.trim() !== '');
+      } else if (categories[0] && (categories[0]._ || categories[0].term)) {
+        tags = categories.map(cat => cat._ || cat.term || '').filter(tag => tag && tag.trim() !== '');
+      }
+      
+      if (tags.some(tag => EXCLUDED_TAGS.includes(tag))) {
+        console.log(`Skipping photo ${photoId} because it has excluded tag: ${tags.filter(tag => EXCLUDED_TAGS.includes(tag))}`);
+        return null;
+      }
+    }
 
     // Try to extract date taken from the entry
     takenDate = pubDate; // Default to pubDate
-
+    
     // Look for dateTaken in content (sometimes embedded in HTML)
-    if (content) {
+    if (typeof content === 'string') {
       const dateMatch = content.match(/taken on ([^<]+)/i);
       if (dateMatch && dateMatch[1]) {
         try {
@@ -520,6 +736,28 @@ async function createPhotoContent(photo) {
     photoId = null;
     author = 'Bram Willemse';
     categories = [];
+  }
+
+  // Clean up description by safely removing HTML
+  const cleanDescription = cleanHtml(description);
+
+  // If this is coming from the Flickr API (not RSS feed) and has geo data, try to fetch location
+  if (photo.id && (photo.latitude || photo.longitude || photo.place_id)) {
+    try {
+      const locationString = await getFlickrPhotoLocation(photoId);
+      if (locationString) {
+        location = locationString;
+        console.log(`Found location for photo ${photoId}: ${location}`);
+        
+        // If the photo has a generic title like "Untitled Photo", use location as the title
+        if (title === 'Untitled Photo' || !title) {
+          title = location;
+          console.log(`Using location as title for photo ${photoId}: ${title}`);
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching location for photo ${photoId}: ${error.message}`);
+    }
   }
 
   // Download the image to the assets directory if we have a photo ID
@@ -545,16 +783,16 @@ async function createPhotoContent(photo) {
   // Process tags based on the format
   let tags = [];
 
-  if (categories && categories.length > 0) {
-    // Handle both Atom and RSS formats for categories
-    if (categories[0].$) {
+  if (Array.isArray(categories) && categories.length > 0) {
+    // Handle different category formats
+    if (categories[0] && categories[0].$ && categories[0].$.term) {
       // RSS format
       tags = categories.map(cat => cat.$.term).filter(tag => tag !== 'bramwillemse');
     } else if (typeof categories[0] === 'string') {
-      // Some Atom feeds have categories as strings
+      // Some feeds have categories as strings
       tags = categories.filter(tag => tag !== 'bramwillemse');
-    } else if (categories[0]._ || categories[0].term) {
-      // Other Atom feeds have categories as objects
+    } else if (categories[0] && (categories[0]._ || categories[0].term)) {
+      // Other feeds have categories as objects
       tags = categories.map(cat => cat._ || cat.term || '').filter(tag => tag && tag !== 'bramwillemse');
     }
   }
@@ -577,6 +815,10 @@ date: ${formatDate(takenDate)}
 description: "Photo: ${title.replace(/"/g, '\\"')}"
 author: ${author}
 type: "photos"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
 tags: [${tags.map(t => `"${t.replace(/"/g, '\\"')}"`).join(', ')}]
 flickr:
   url: "${link}"
@@ -584,6 +826,7 @@ flickr:
   image_url: "${highResImageUrl}"
   date_taken: "${formatDate(takenDate)}"
   date_published: "${formatDate(pubDate)}"
+location: ${location ? `"${location.replace(/"/g, '\\"')}"` : "null"}
 featured_image:
   src: "${isLocalImage ? localImagePath : highResImageUrl}"
 ---
@@ -591,7 +834,9 @@ featured_image:
 ${isLocalImage
   ? `{{< figure src="/${localImagePath}" title="${title.replace(/"/g, '\\"')}" >}}`
   : `{{< flickr-image url="${highResImageUrl}" title="${title.replace(/"/g, '\\"')}" >}}`
-}`;
+}
+
+${cleanDescription}`;
 
   // Write to file
   const filePath = path.join(CONTENT_DIR, `${slug}.md`);
@@ -601,11 +846,93 @@ ${isLocalImage
 }
 
 /**
+ * Process a single photo by ID
+ * @param {string} photoId - The Flickr photo ID to process
+ * @returns {Promise<boolean>} - Success status
+ */
+async function processSinglePhoto(photoId) {
+  try {
+    console.log(`Processing single photo with ID: ${photoId}`);
+    
+    // Construct the Flickr API URL for getting a single photo
+    const singlePhotoUrl = `https://www.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=${FLICKR_API_KEY}&photo_id=${photoId}&format=json&nojsoncallback=1`;
+    
+    const response = await axios.get(singlePhotoUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 BramWillemseWebsite/1.0 (https://bramwillemse.nl)',
+        'Accept': 'application/json',
+        'Referer': 'https://bramwillemse.nl'
+      },
+      timeout: 15000
+    });
+    
+    if (response.data && response.data.photo) {
+      const photo = response.data.photo;
+      
+      // Try to get location data
+      let locationString = null;
+      if (photo.location) {
+        try {
+          const locationData = await getFlickrPhotoLocation(photoId);
+          if (locationData) {
+            locationString = locationData;
+            console.log(`Found location for photo ${photoId}: ${locationString}`);
+          }
+        } catch (locError) {
+          console.error(`Error fetching location: ${locError.message}`);
+        }
+      }
+      
+      // Format the photo object to match our createPhotoContent expectations
+      const formattedPhoto = {
+        id: photo.id,
+        title: photo.title._content || (locationString || 'Untitled Photo'),
+        datetaken: photo.dates.taken,
+        dateupload: photo.dates.posted,
+        description: photo.description._content || '',
+        tags: photo.tags ? photo.tags.tag.map(t => t.raw).join(' ') : '',
+        url_m: photo.urls.url.find(u => u.type === 'photopage')._content,
+        latitude: photo.location?.latitude,
+        longitude: photo.location?.longitude,
+        place_id: photo.location?.place_id
+      };
+      
+      // Process the photo
+      const slug = await createPhotoContent(formattedPhoto);
+      if (slug) {
+        console.log(`Successfully processed photo: ${slug}`);
+        return true;
+      } else {
+        console.log(`Photo was skipped during processing`);
+        return false;
+      }
+    } else {
+      console.error(`Error: Invalid response or photo not found`);
+      return false;
+    }
+  } catch (error) {
+    console.error(`Error processing single photo: ${error.message}`);
+    return false;
+  }
+}
+
+/**
  * Main function to fetch and process photos from Flickr
  * Uses Flickr API to fetch up to 500 photos (much more than the RSS feed limit of 20)
  */
 async function fetchAndProcessFeed() {
   try {
+    // If a specific photo ID was provided, only process that photo
+    if (SPECIFIC_PHOTO_ID) {
+      const success = await processSinglePhoto(SPECIFIC_PHOTO_ID);
+      if (success) {
+        console.log(`Successfully processed photo ID: ${SPECIFIC_PHOTO_ID}`);
+      } else {
+        console.error(`Failed to process photo ID: ${SPECIFIC_PHOTO_ID}`);
+      }
+      return;
+    }
+    
     let photoData = [];
 
     if (USE_SAMPLE) {
@@ -799,6 +1126,15 @@ async function fetchAndProcessFeed() {
         // API format (directly provides id)
         if (item.id) {
           photoId = item.id;
+          
+          // Check for excluded tags early if it's API format
+          if (item.tags) {
+            const photoTags = item.tags.split(' ').filter(tag => tag.trim() !== '');
+            if (photoTags.some(tag => EXCLUDED_TAGS.includes(tag))) {
+              console.log(`Skipping photo ${photoId} because it has excluded tag: ${photoTags.filter(tag => EXCLUDED_TAGS.includes(tag))}`);
+              continue;
+            }
+          }
         } 
         // RSS/Atom format (need to extract from link)
         else {
@@ -822,6 +1158,27 @@ async function fetchAndProcessFeed() {
             const idMatch = photoLink.match(/\/photos\/[^\/]+\/(\d+)/);
             photoId = idMatch ? idMatch[1] : null;
           }
+          
+          // Check for excluded tags for RSS/Atom format
+          if (item.category) {
+            let categoryItems = item.category;
+            let tags = [];
+            
+            // Handle different formats
+            if (categoryItems[0] && categoryItems[0].$) {
+              // RSS format
+              tags = categoryItems.map(cat => cat.$.term).filter(tag => tag.trim() !== '');
+            } else if (typeof categoryItems[0] === 'string') {
+              tags = categoryItems.filter(tag => tag.trim() !== '');
+            } else if (categoryItems[0] && (categoryItems[0]._ || categoryItems[0].term)) {
+              tags = categoryItems.map(cat => cat._ || cat.term || '').filter(tag => tag && tag.trim() !== '');
+            }
+            
+            if (tags.some(tag => EXCLUDED_TAGS.includes(tag))) {
+              console.log(`Skipping photo ${photoId} because it has excluded tag: ${tags.filter(tag => EXCLUDED_TAGS.includes(tag))}`);
+              continue;
+            }
+          }
         }
         
         if (!photoId) {
@@ -840,6 +1197,12 @@ async function fetchAndProcessFeed() {
 
         try {
           const slug = await createPhotoContent(item);
+          // Skip if createPhotoContent returned null (photo was excluded)
+          if (!slug) {
+            console.log(`Skipping photo ${photoId} - was excluded during processing`);
+            continue;
+          }
+          
           downloadedPhotos++;
           
           if (isUpdate) {

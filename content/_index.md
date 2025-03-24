@@ -6,7 +6,7 @@ description: Bram Willemse is a product professional with a background in digita
 
 <header class="e-homepage__header">
   <h1>Hi, my name is Bram.</h1>
-  <p>As a product professional, I combine analytical thinking and empathy to unite teams and ideas, advocating for engineering excellence and team well-being. I am committed to the following 3 principles, contributing to innovation, productivity, and a positive work environment.</p>
+  <p>As a product professional, I combine creative and analytical thinking to unite teams and ideas, advocating for engineering excellence and team well-being. I am committed to the following 3 principles, contributing to innovation, productivity, and a positive work environment.</p>
 </header>
 
 <article class="e-homepage__card e-homepage__card-one">

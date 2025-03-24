@@ -1,0 +1,24 @@
+---
+title: "San Isidro, El Guarco, Provincia de Cartago, Costa Rica"
+date: 2024-11-29T09:16:44.000Z
+description: "Photo: San Isidro, El Guarco, Provincia de Cartago, Costa Rica"
+author: Bram Willemse
+type: "photos"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
+tags: ["costarica"]
+flickr:
+  url: "https://www.flickr.com/photos/25787603@N08/54301846099"
+  photo_id: "54301846099"
+  image_url: "https://live.staticflickr.com/65535/54301846099_2f2213451a_k.jpg"
+  date_taken: "2024-11-29T09:16:44.000Z"
+  date_published: "2025-03-24T09:45:06.483Z"
+location: "San Isidro, El Guarco, Provincia de Cartago, Costa Rica"
+featured_image:
+  src: "images/photos/flickr-54301846099.jpg"
+---
+
+{{< figure src="/images/photos/flickr-54301846099.jpg" title="San Isidro, El Guarco, Provincia de Cartago, Costa Rica" >}}
+

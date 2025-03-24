@@ -1,0 +1,24 @@
+---
+title: "Landkreis Ludwigsburg, Regierungsbezirk Stuttgart, Baden-Württemberg, Germany"
+date: 2024-10-11T11:52:12.000Z
+description: "Photo: Landkreis Ludwigsburg, Regierungsbezirk Stuttgart, Baden-Württemberg, Germany"
+author: Bram Willemse
+type: "photos"
+parent:
+  title: "Feed"
+  url: "/feed"
+  icon: "list"
+tags: []
+flickr:
+  url: "https://www.flickr.com/photos/25787603@N08/54301982508"
+  photo_id: "54301982508"
+  image_url: "https://live.staticflickr.com/65535/54301982508_485bf4a7a0_k.jpg"
+  date_taken: "2024-10-11T11:52:12.000Z"
+  date_published: "2025-03-24T09:44:44.870Z"
+location: "Landkreis Ludwigsburg, Regierungsbezirk Stuttgart, Baden-Württemberg, Germany"
+featured_image:
+  src: "images/photos/flickr-54301982508.jpg"
+---
+
+{{< figure src="/images/photos/flickr-54301982508.jpg" title="Landkreis Ludwigsburg, Regierungsbezirk Stuttgart, Baden-Württemberg, Germany" >}}
+
