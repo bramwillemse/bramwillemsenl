@@ -7,25 +7,40 @@
     <title>{{ .Title | default .Site.Title }}</title>
     <meta name="description" content="{{ $.Description }}" />
 
-    {{ $imgPath := cond (hasPrefix $.Params.featured_image.src "/") (strings.TrimPrefix "/" $.Params.featured_image.src) $.Params.featured_image.src }}
-    {{ $fullImageURL := printf "%s%s" .Site.BaseURL $imgPath }}
+    <!-- Process the image using Hugo's image processing -->
+    {{ $src := $.Params.featured_image.src }}
+    {{ if not (hasPrefix $src "/") }}
+      {{ $src = print "/" $src }}
+    {{ end }}
+    
+    {{ $image := resources.GetMatch (strings.TrimPrefix "/" $src) }}
+    {{ $socialImage := "" }}
+    {{ if $image }}
+      {{ $socialImage = $image.Resize "1200x627 q85" }}
+    {{ end }}
     
     <meta property="og:site_name" content="{{ .Site.Title }}">
     <meta property="og:title" content="{{ .Title | default .Site.Title }}"/>
-    <meta property="og:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627"/>
-    <meta property="og:image:secure_url" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627"/>
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="627" />
+    {{ if $socialImage }}
+      <meta property="og:image" content="{{ $socialImage.Permalink }}"/>
+      <meta property="og:image:secure_url" content="{{ $socialImage.Permalink }}"/>
+      <meta property="og:image:width" content="{{ $socialImage.Width }}" />
+      <meta property="og:image:height" content="{{ $socialImage.Height }}" />
+    {{ end }}
     <meta property="og:description" content="{{ $.Description }}"/>
-    <meta property="og:url" content="{{ .Site.BaseURL }}{{ strings.TrimPrefix "/" .RelPermalink }}" />
+    <meta property="og:url" content="{{ .Permalink }}" />
 
     <!-- LinkedIn specific meta tags -->
-    <meta name="image" property="og:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627" />
+    {{ if $socialImage }}
+      <meta name="image" property="og:image" content="{{ $socialImage.Permalink }}" />
+    {{ end }}
     <meta name="author" content="{{ if .Params.author }}{{ .Params.author }}{{ else }}{{ .Site.Title }}{{ end }}" />
     
     <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
     <meta name="twitter:description" content="{{ $.Description }}">
-    <meta name="twitter:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627">
+    {{ if $socialImage }}
+      <meta name="twitter:image" content="{{ $socialImage.Permalink }}">
+    {{ end }}
     <meta name="twitter:image:alt" content="{{ $.Params.featured_image.alt }}">
     <meta name="twitter:site" content="@bramwillemse">
 
