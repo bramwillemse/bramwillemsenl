@@ -48,6 +48,6 @@ What a difference a few weeks make. After going through all of the above, I know
 Yes, right now it's still a lot of work to have your AI do your work. But every week these AI models are improving and getting better at their job. The gap between "good enough" and "perfect" is shrinking daily.
 
 ## Doom
-So what are you going to do about it? Will you be the last human standing in a room full of AI ghosts, stubbornly writing every line of code yourself? Or will you evolve into something new - the AI conductor, the prompt engineer, the architect of ideas rather than implementations?
+So what are we going to do about it? Will we be the last human standing in a room full of AI ghosts, stubbornly writing every line of code ourselves? Or will we evolve into something new - the AI conductor, the prompt engineer, the architect of ideas rather than implementations?
 
-*Developers are dead. Long live AI engineers! (I guess? Or what will we call them?)*
+*Developers are dead. Long live AI engineers! I guess? Or what will we call them?* 🤷‍♂️
