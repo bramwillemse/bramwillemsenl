@@ -40,6 +40,8 @@ Github Copilot is a chat window in my IDE (code editing app) and you can tell it
 ## Vibing
 Lucky as I am, a week later Claude Code was released. Claude Code is a CLI application (it runs in your system's terminal). It looks for the right files and code for context by itself and if it has an idea how to fix it, it will ask you for permissions to change your code, build, commit and even push changes. It truly does the work for you - think of Claude Code as a self-driving car that takes you to your destination while you sit back and relax. Where I had to review, accept and save any change Copilot made in Visual Studio, Claude Code just does it all for you. Like any AI, the less you instruct it, the more mistakes it makes and the more crap code it writes.
 
+{{<video src="https://www.youtube-nocookie.com/embed/AJpK3YTTKZ4" title="Anthropic's introduction of Claude Code" caption="Anthropic's introduction of Claude Code" >}}
+
 In half a day it had built me a working Flickr API integration (that's why you now see my latest photos in the Feed) and even helped add the timeline visual. I manually optimized the HTML and CSS, but didn't touch or inspect any of the Flickr code. In a day or 2, I got work done that would've taken me a week or 2. I would've had to learn about best practices for importing external content in Hugo and spent hours coding the timeline visual, testing and optimizing the look and feel.
 
 ## Preaching
