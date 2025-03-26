@@ -7,15 +7,25 @@
     <title>{{ .Title | default .Site.Title }}</title>
     <meta name="description" content="{{ $.Description }}" />
 
+    {{ $imgPath := cond (hasPrefix $.Params.featured_image.src "/") (strings.TrimPrefix "/" $.Params.featured_image.src) $.Params.featured_image.src }}
+    {{ $fullImageURL := printf "%s%s" .Site.BaseURL $imgPath }}
+    
     <meta property="og:site_name" content="{{ .Site.Title }}">
     <meta property="og:title" content="{{ .Title | default .Site.Title }}"/>
-    <meta property="og:image" content="https://bramwillemse.nl/{{ $.Params.featured_image.src }}?nf_resize=fit&w=1200&h=627"/>
+    <meta property="og:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627"/>
+    <meta property="og:image:secure_url" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627"/>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
     <meta property="og:description" content="{{ $.Description }}"/>
-    <meta property="og:url" content="https://bramwillemse.nl{{ .Permalink }}" />
+    <meta property="og:url" content="{{ .Site.BaseURL }}{{ strings.TrimPrefix "/" .RelPermalink }}" />
 
+    <!-- LinkedIn specific meta tags -->
+    <meta name="image" property="og:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627" />
+    <meta name="author" content="{{ if .Params.author }}{{ .Params.author }}{{ else }}{{ .Site.Title }}{{ end }}" />
+    
     <meta name="twitter:title" content="{{ .Title | default .Site.Title }}">
     <meta name="twitter:description" content="{{ $.Description }}">
-    <meta name="twitter:image" content="https://bramwillemse.nl/{{ $.Params.featured_image.src }}?nf_resize=fit&w=1200&h=627">
+    <meta name="twitter:image" content="{{ $fullImageURL }}?nf_resize=fit&w=1200&h=627">
     <meta name="twitter:image:alt" content="{{ $.Params.featured_image.alt }}">
     <meta name="twitter:site" content="@bramwillemse">
 

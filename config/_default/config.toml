@@ -1,4 +1,3 @@
-baseURL = "/"
 DefaultContentLanguage = "en"
 title = "Bram Willemse"
 theme = "bw-monochrome"
