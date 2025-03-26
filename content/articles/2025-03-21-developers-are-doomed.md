@@ -1,15 +1,15 @@
 ---
-title: "Developers are dead"
-title_short: "Developers are dead"
+title: "Developers are doomed"
+title_short: "Developers are doomed"
 introduction: "<p>Remember when we used to write code? When we'd spend hours debugging, refactoring, and optimizing our work? Those days are numbered. The regular developer's obituary is being written, and AI is holding the pen.</p><p>I was a bit late to the generative AI party. I followed the news closely, but I tend to be skeptical these days. Skeptical about the latest Silicon Valley hype and skeptical when privacy concerns are involved. But now I've seen the future, and it doesn't include all of us.</p>"
-date: 2025-03-21T10:25:10+01:00
+date: 2025-03-26T10:25:10+01:00
 author: "Bram Willemse"
 type: "articles"
-url: "/articles/developers-are-dead/"
+url: "/articles/developers-are-doomed/"
 description: "The rise of AI tools like GitHub Copilot and Claude Code is fundamentally changing the role of developers. Are we witnessing the end of traditional coding?"
-reading_time: "6 minutes"
+reading_time: "7 minutes"
 featured_image:
-  src: /images/developers-are-dead/developers-are-dead.jpg
+  src: /images/developers-are-doomed/developers-are-doomed.jpg
   alt: "Photorealistic scene of an abandoned office with a skeleton slumped over a keyboard, while a glowing AI robot stands in the background overseeing empty workstations — a symbolic depiction of the end of human developers and the rise of AI."
 parent:
   title: "Feed"
@@ -47,7 +47,7 @@ What a difference a few weeks make. After going through all of the above, I know
 
 Yes, right now it's still a lot of work to have your AI do your work. But every week these AI models are improving and getting better at their job. The gap between "good enough" and "perfect" is shrinking daily.
 
-## Dying
+## Doom
 So what are you going to do about it? Will you be the last human standing in a room full of AI ghosts, stubbornly writing every line of code yourself? Or will you evolve into something new - the AI conductor, the prompt engineer, the architect of ideas rather than implementations?
 
 *Developers are dead. Long live AI engineers! (I guess? Or what will we call them?)*
