@@ -14,7 +14,7 @@ parent:
 
 ## Keeping busy
 
-- **I am working with Flow Money Automations** as a Product Owner. Flow Money Automations is a Dutch startup, [recently acquired](https://www.withflow.com/press-release-flow-snelstart "Read the press release about the SnelStart-Flow acquisition") by book keeping software company SnelStart, that develops embeddable, financial modules for their own software.
+- **I am working with Flow Money Management Products** as a Product Owner. Flow Money Automations is a Dutch startup, [recently acquired](https://www.withflow.com/press-release-flow-snelstart "Read the press release about the SnelStart-Flow acquisition") by book keeping software company SnelStart, that develops embeddable, financial modules for their own software.
 
 ## Personal development
 - **I am currently reading**:
