@@ -5,7 +5,7 @@ date: 2025-07-18T16:42:00+02:00
 description: What is Bram Willemse doing now?
 url: /now/
 featured_image:
-  src: images/now/bram_willemse-summer_in_italy_village_pella.jpeg
+  src: images/now/bramsterdam-autumn_canal.jpeg
 parent:
   title: Bram
   url: "/"
@@ -14,7 +14,7 @@ parent:
 
 ## Keeping busy
 
-- **I am working with Flow Money Management Products** as a Product Owner. Flow Money Automations is a Dutch startup, [recently acquired](https://www.withflow.com/press-release-flow-snelstart "Read the press release about the SnelStart-Flow acquisition") by book keeping software company SnelStart, that develops embeddable, financial modules for their own software.
+- **I am working with Flow Money Management** as a Product Owner. Flow is a Dutch startup, [recently acquired](https://www.withflow.com/press-release-flow-snelstart "Read the press release about the SnelStart-Flow acquisition") by software company SnelStart. We develop embedded finance products for the B2B2X market.
 
 ## Personal development
 - **I am currently reading**:
@@ -28,11 +28,11 @@ parent:
 ## Keeping calm &amp; fit
 - **I am getting strong** after going to the gym twice a week again, for the first time in decades as I am trying to work on my base level fitnes. All this to prevent injuries and discomforts in running and bouldering and improve my quality of life in general.
 - **I am picking up running again**. As stated earlier, I have been off running for a few months in winter due to Post-COVID-like symptoms. Now I am getting back into it, starting from scratch is hard. Follow my ups & downs on  [Strava](https://strava.com/athletes/bramwillemse "Follow my training progress on Strava").
-- **I am practicing yoga twice a week** after finding an awesome Amsterdam yoga school called [Tula Yoga](https://www.tulayogastudios.nl/). I practice yin and hatha yoga. It's a great contrasting exercise next to running and bouldering and perfect for addressing Post-COVID symptoms too.
+- **I am practicing yoga** once or twice a week. I mainly practice yin and hatha yoga. It's a great contrasting exercise next to running, gym workouts and bouldering and perfect for addressing Post-COVID symptoms too.
 - I **started bouldering** in 2021 and I love it. I try to do it once a week and I've been climbing up until 6B levels last year. Because gym training, running and yoga is already a lot, I am taking it a bit easier with bouldering at the moment.
 
-*This page was last updated on <time datetime="2025-07-18T16:42:00+02:00
-">July 18th, 2025</time> at home in Amsterdam, the Netherlands*.
+*This page was last updated on <time datetime="2025-10-16T13:52:00+02:00
+">October 16th, 2025</time> at home in Amsterdam, the Netherlands*.
 
 ## Want to connect?
 
