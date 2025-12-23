@@ -5,7 +5,7 @@ date: 2025-07-18T16:42:00+02:00
 description: What is Bram Willemse doing now?
 url: /now/
 featured_image:
-  src: images/now/bramsterdam-autumn_canal.jpeg
+  src: images/now/bram_willemse-ardennes-belgium-sunrise.jpeg
 parent:
   title: Bram
   url: "/"
