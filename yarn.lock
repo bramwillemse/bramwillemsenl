@@ -5393,12 +5393,7 @@ shebang-regex@^3.0.0:
   resolved "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shell-quote@^1.6.1, shell-quote@^1.8.1:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.10.0.tgz#482033e192e4f5c07151521ffa03400ec71b1b0f"
-  integrity sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==
-
-shell-quote@^1.8.4:
+shell-quote@^1.6.1, shell-quote@^1.8.1, shell-quote@^1.8.4:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.10.0.tgz#482033e192e4f5c07151521ffa03400ec71b1b0f"
   integrity sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==
@@ -6278,9 +6273,9 @@ write-file-atomic@^5.0.1:
     signal-exit "^4.0.1"
 
 ws@^8.18.0:
-  version "8.18.1"
-  resolved "https://registry.npmjs.org/ws/-/ws-8.18.1.tgz"
-  integrity sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==
+  version "8.21.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.2.tgz#e6976cfe96161d40420689a5f051378d11b0f0ce"
+  integrity sha512-54dMVAo4WIe6SKy3vBgN+9bJZqqQ8IMRevAkOLQALhi49qkkQDQfWdAZ8KQlXiEabw88ARXXdUrlvtbKQX+aKw==
 
 xml2js@^0.6.2:
   version "0.6.2"
