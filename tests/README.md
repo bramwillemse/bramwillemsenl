@@ -10,6 +10,8 @@ This directory contains automated tests for the bramwillemse.nl website using Pl
 
 ## Running Tests
 
+On a fresh machine or cloud session, run `bin/setup-cloud.sh` first. It installs Hugo (the version from `netlify.toml`), the Yarn dependencies and the Playwright browser.
+
 You can run the tests using the following commands:
 
 ```bash
