@@ -33,7 +33,7 @@ test.describe('Image Loading Visual Tests', () => {
 
   test('Image placeholders show while full images load', async ({ page }) => {
     // Go to an article with images
-    await page.goto('/articles/2020-04-23-sustainable-work/');
+    await page.goto('/sustainable-work/');
     
     // Force slow network to better test lazy loading
     await page.route('**/*.{png,jpg,jpeg}', async route => {

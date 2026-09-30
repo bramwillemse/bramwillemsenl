@@ -10,6 +10,8 @@ This directory contains automated tests for the bramwillemse.nl website using Pl
 
 ## Running Tests
 
+On a fresh machine or cloud session, run `bin/setup-cloud.sh` first. It installs Hugo (the version from `netlify.toml`), the Yarn dependencies and the Playwright browser.
+
 You can run the tests using the following commands:
 
 ```bash
@@ -31,7 +33,7 @@ yarn test:visual-update
 
 ## Screenshots
 
-Tests automatically capture screenshots in the `tests/screenshots` directory for visual comparison and debugging.
+Tests automatically capture screenshots in the `tests/screenshots` directory for visual comparison and debugging. This directory is git-ignored because every test run overwrites the files.
 
 ## Adding New Tests
 
