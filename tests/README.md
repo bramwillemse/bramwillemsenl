@@ -33,7 +33,7 @@ yarn test:visual-update
 
 ## Screenshots
 
-Tests automatically capture screenshots in the `tests/screenshots` directory for visual comparison and debugging.
+Tests automatically capture screenshots in the `tests/screenshots` directory for visual comparison and debugging. This directory is git-ignored because every test run overwrites the files.
 
 ## Adding New Tests
 
