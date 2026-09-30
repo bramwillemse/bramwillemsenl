@@ -53,11 +53,8 @@ test.describe('Lazy Loading Tests', () => {
     await expect(page).toHaveURL(/#site-main$/);
   });
 
-  // KNOWN BUG: main.o-site-main uses `display: contents`, so it has no box and
-  // Chrome can't focus it despite tabindex="-1". The skip link scrolls to the
-  // content but focus stays on <body>. Fix: give main a real box (or move the
-  // focus target to an inner element), then change fixme to test.
-  test.fixme('Skip link moves focus to the main landmark', async ({ page }) => {
+  // Regression test: main needs a real box (not display: contents) to be focusable.
+  test('Skip link moves focus to the main landmark', async ({ page }) => {
     await page.goto('/');
     await page.keyboard.press('Tab');
     await page.keyboard.press('Enter');

@@ -1,4 +1,13 @@
+/*
+ * Main needs a real box (not display: contents) so it can receive focus from
+ * the skip link. A subgrid keeps children aligned to the body's columns; gap
+ * and alignment are inherited from the global grid so spacing stays the same.
+ */
 .o-site-main {
-  display: contents; /* This makes children of site-main act as direct children of body */
+  align-items: inherit;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   outline: none;
+  row-gap: inherit;
 }

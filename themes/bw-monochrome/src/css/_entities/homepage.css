@@ -42,7 +42,7 @@ Styles specific to the homepage components.
   }
 
   .e-homepage__card {
-    grid-row: 3 / 4;
+    grid-row: 2 / 3; /* Rows are relative to main (header is row 1) */
   }
 }
 
