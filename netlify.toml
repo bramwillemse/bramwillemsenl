@@ -4,3 +4,11 @@
   NODE_VERSION = "23"
   YARN_VERSION = "1.22.22"
   HUGO_VERSION = "0.143.1"
+
+# Previews: use the preview URL as baseURL, so <base href> and asset URLs
+# point to the preview instead of production
+[context.deploy-preview]
+  command = "yarn build:webpack && HUGO_TIMEOUT=120s HUGO_RESOURCEDIR=resources hugo --environment production --gc --minify --baseURL $DEPLOY_PRIME_URL"
+
+[context.branch-deploy]
+  command = "yarn build:webpack && HUGO_TIMEOUT=120s HUGO_RESOURCEDIR=resources hugo --environment production --gc --minify --baseURL $DEPLOY_PRIME_URL"
