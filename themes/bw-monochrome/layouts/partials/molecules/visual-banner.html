@@ -19,6 +19,7 @@
         <source data-srcset="{{ $medium.RelPermalink }}" media="(min-width: 300px)">
         <img
           class="m-visual-banner__image"
+          alt="{{ with $.Params.featured_image.alt }}{{ . }}{{ end }}"
           src="{{ $tiny.RelPermalink }}"
           data-src="{{ $small.RelPermalink }}"
           loading="lazy"
