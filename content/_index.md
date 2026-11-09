@@ -1,7 +1,7 @@
 ---
 type: page
-title: Bram Willemse - Product professional
-description: Bram Willemse is a product professional with a background in digital product development, based in Amsterdam, the Netherlands.
+title: Bram Willemse - Technical product professional
+description: Bram Willemse is a technical product professional with a background in digital product development, based in the Netherlands.
 ---
 
 <header class="e-homepage__header">
