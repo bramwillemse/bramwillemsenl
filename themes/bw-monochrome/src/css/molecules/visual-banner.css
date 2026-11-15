@@ -39,16 +39,3 @@ Visual header's full-width banner image. Needs visual banner overlay atom to fun
   object-position: center;
   width: 100%;
 }
-
-/* Overlay caption on the image so it doesn't become a flex column next to it */
-.m-visual-banner__caption {
-  bottom: 0;
-  color: var(--white);
-  left: 0;
-  margin: 0;
-  padding: var(--regular);
-  position: absolute;
-  right: 0;
-  text-align: left;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
-}
